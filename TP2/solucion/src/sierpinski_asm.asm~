@@ -90,7 +90,7 @@ sierpinski_asm:
         jne .cicloc
 
         inc ecx ; i++
-        cmp ecx, r13d
+        cmp ecx, filas
         jne .ciclof
 
         add rsp, 16
