@@ -1,14 +1,16 @@
 global sierpinski_asm
 
 section .data
+unodostres: DD 0,1,2,3
+doscincocinco: DD 255,255,255,255
 
 section .text
 
-;void sierpinski_asm (unsigned char *src,
-;                     unsigned char *dst,
-;                     int cols, int rows,
-;                     int src_row_size,
-;                     int dst_row_size)
+;void sierpinski_asm (unsigned char *src,	;rdi=src
+;                     unsigned char *dst,	;rsi=dst (si, fueron molestos)
+;                     int cols, int rows,	;edx=cols ; ecx=rows
+;                     int src_row_size,		;r8d=src_row_size
+;                     int dst_row_size)		;r9d=dst_row_size
 
 sierpinski_asm:
         push rbp
@@ -16,88 +18,68 @@ sierpinski_asm:
         push rbx
         push r12
         push r13
-        push r14
-        push r15
         sub rsp, 16
         mov dword [rsp], 255
-        mov dword [rsp+8], 4
 
-        mov r12d, edx ; cols
-        mov r13d, ecx ; rows
-        mov r14d, r8d ; src_row_size
-        mov r15d, r9d ; dst_row_size
-
-        xor rdx, rdx
-        mov ecx, 0 ;i
+        mov r12d, 0 			;i
     .ciclof:
-        mov r8d, 0 ;j
+        mov r13d, 0 			;j (PIXEL)
     .cicloc:
-        mov eax, ecx
-        mul dword [rsp] ; [rsp]=255, no te deja dividir directo por un nº
-        div r12d 
-        mov r10d, eax ;r10=i*255/filas
+	xor rbx, rbx
+	mov ebx, r12d			; en realidad, r12d*r8d+r13d*4
+	movdqu xmm1, [rdi+rbx] 		; pongo en xmm1 4 pixeles
+	movdqu xmm2, xmm1
+	pxor xmm7, xmm7
+	punpckhwd xmm1, xmm7 		; xmm1=r0|g0|b0|a0|r1|g1|b1|a1
+	punpcklwd xmm2, xmm7 		; xmm2=r2|g2|b2|a2|r3|g3|b3|a3 
 
-        mov eax, r8d 
-        div dword [rsp+8]
-        mul dword [rsp]
-        div r13d 
-        mov r11d, eax ;r11=i*255/filas
+					; xmm0=r0|g0|b0|a0 (float)	
+					; xmm1=r1|g1|b1|a1 (float)
+					; xmm2=r2|g2|b2|a2 (float)
+					; xmm3=r3|g3|b3|a3 (float)
+	
+	mov eax, r12d
+	mul dword [rsp]
+        xor rdx, rdx			; porlas
+	div ecx				; eax=i*255/filas
+	
+	movd xmm4, eax 			; xmm4=0|0|0|eax
+	pshufd xmm4, xmm7, 0	 	; xmm4=i*255/filas|i*255/filas|i*255/filas|i*255/filas (int)
 
-        xor r10d, r11d 
-        cvtsi2sd xmm0, r10d
-        cvtsi2sd xmm1, [rsp]; divido por 255
-        divsd xmm0, xmm1 ; xmm0=coef
+	movd xmm5, r13d
+	pshufd xmm5, xmm7, 0		; xmm5=r13d|r13d|r13d|r13d
+	paddd xmm5, [unodostres] 	; xmm5=j|j+1|j+2|j+3
 
-        mov eax, ecx
-        mul r14d
-        mov r10d, eax ; escala*fila (src)
+	movd xmm6, edx 			; xmm6=0|0|0|edx
+	pshufd xmm6, xmm7, 0	 	; xmm6=edx|edx|edx|edx=cols|cols|cols|cols
 
-        mov eax, ecx
-        mul r15d
-        mov r11d, eax ; escala*fila (dst)
+	pmulld xmm5, [doscincocinco]	; xmm5=j*255|(j+1)*255|(j+2)*255|(j+3)*255
+	divps xmm5, xmm6 		; xmm5=j*255/cols|(j+1)*255/cols|(j+2)*255/cols|(j+3)*255/cols (float)
+	cvtps2dq xmm5, xmm5 		; ahora son int
+	pxor xmm4, xmm6 		; xmm4=coef(i,j)*255|coef(i,j+1)*255|coef(i,j+2)*255|coef(i,j+3)*255 (int)
 
-        add edi, r10d
-        add edi, r8d
+	;pshufb				; xmm5=coef(i,j)*255|coef(i,j)*255|coef(i,j)*255|coef(i,j)*255 (int)
+					; xmm0->int
+					; xmm0*xmm5
+					; xmm0->float
+					; xmm0/255
+					; xmm0->int
+					; repetir para los 3 registros
+					; volver a empaquetar todo en xmm0
+					; mov rbx, r12d*r8d+r13d*4 (que convenientemente tengo guardado en algún lado)
+	movdqu [rsi+rbx], xmm0 		; pongo en el destino
 
-        add esi, r11d
-        add esi, r8d
-
-        cvtsi2sd xmm1, [rdi] ; rdi = inicio + escala*fila + columna (src)
-        mulsd xmm0, xmm1
-        cvtsd2si r10d, xmm0
-		mov [rsi], r10b ; rsi = inicio + escala*fila + columna (dst)
-
-        cvtsi2sd xmm1, [rdi+1]
-        mulsd xmm0, xmm1
-        cvtsd2si r10d, xmm0
-		mov [rsi+1], r10b
-
-        cvtsi2sd xmm1, [rdi+2]
-        mulsd xmm0, xmm1
-        cvtsd2si r10d, xmm0
-		mov [rsi+2], r10b
-
-        sub edi, r10d ; si, ya sé que modifiqué r10, ahora me importa que compile
-        sub edi, r8d
-
-        sub esi, r11d
-        sub esi, r8d
-
-        add r8d, 4 ; j+=4
-        mov eax, edx
-        mul dword [rsp+8] ; fuuuu
-        cmp r8d, eax 
+        inc r13d 			; j++
+        cmp r13d, edx 
         jne .cicloc
 
-        inc ecx ; i++
-        cmp ecx, r13d
+        inc r12d 			; i++
+        cmp r12d, ecx
         jne .ciclof
 
         add rsp, 16
-        pop r15
-        pop r14
         pop r13
         pop r12
         pop rbx
         pop rbp
-        ret
+        ret 				;gg
