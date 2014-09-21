@@ -16,6 +16,11 @@ void cropflip_c    (
 {
 	unsigned char (*src_matrix)[src_row_size] = (unsigned char (*)[src_row_size]) src;
 	unsigned char (*dst_matrix)[dst_row_size] = (unsigned char (*)[dst_row_size]) dst;
-
-
+	
+	
+	for (int i=0; i<tamy; i++) {
+		for (int j=0; j<tamx*4; j++) {
+			dst_matrix[i][j]=src_matrix[tamy+offsety-i-1][offsetx*4+j];
+		}
+	} 
 }
