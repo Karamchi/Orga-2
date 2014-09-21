@@ -52,13 +52,12 @@ cropflip_asm:
 			movdqu [rax], xmm0
 
 			add r11, 4
-			cmp r11, r13
+			cmp r11, r12
 			jl .loopj
 		inc r10
-		cmp r10, r12
+		cmp r10, r13
 		jl .loopi
 
-			;%endif
 
 		
 	pop r15

@@ -2,7 +2,7 @@
 global mblur_asm
 
 section .data
-mascara_mul: DW 3277, 3277, 3277, 3277, 3277, 3277, 3277, 3277
+mascara_mul: DD 3277, 3277, 3277, 3277, 3277, 3277, 3277, 3277
 
 
 section .text
@@ -120,7 +120,7 @@ mblur_asm:
 			mov rax, r10
 			mul r8d
 			lea rax, [rax+r11*4]
-			
+			lea rax, [rax+r8*2+8]
 			add rax, rsi
 			movdqu [rax], xmm1
 			
