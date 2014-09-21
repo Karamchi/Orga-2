@@ -36,18 +36,18 @@ cropflip_asm:
 			
 			; en rax va el puntero a la posicion de src
 			xor rax, rax
-			mov rax, r13 		; rax = tamy
-			add rax, r15 	; rax += offsety
-			sub rax, r10			; rax -= i
-			dec rax					; rax = tamy+offsety-i-1
-			mul r8d					; ubique la fila
+			mov rax, r13 				; rax = tamy
+			add rax, r15			 	; rax += offsety
+			sub rax, r10				; rax -= i
+			dec rax						; rax = tamy+offsety-i-1
+			mul r8d						; ubique la fila
 			lea rax, [rax + 4 * r14]
-			lea rax, [rax + r11 * 4]			; rax = (tamy + offsety - i - 1) * src_row_size + (offsetx+j) * 4
+			lea rax, [rax + r11 * 4]	; rax = (tamy + offsety - i - 1) * src_row_size + (offsetx+j) * 4
 			add rax, rdi
 			movdqu xmm0, [rax]
 			mov rax, r10
 			mul r9d
-			lea rax, [rax + r11 * 4]			; rax = i*dst_row_size+j*4
+			lea rax, [rax + r11 * 4]	; rax = i*dst_row_size+j*4
 			add rax, rsi
 			movdqu [rax], xmm0
 
