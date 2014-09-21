@@ -37,15 +37,15 @@ sierpinski_asm:
 	movdqu xmm1, [rdi+rbx] 		; pongo en xmm1 4 pixeles
 	movdqu xmm2, xmm1
 	pxor xmm7, xmm7
-	punpckhbw xmm1, xmm7 		; xmm1=r0|g0|b0|a0|r1|g1|b1|a1
-	punpcklbw xmm2, xmm7 		; xmm2=r2|g2|b2|a2|r3|g3|b3|a3 
+	punpcklbw xmm1, xmm7 		; xmm1=r0|g0|b0|a0|r1|g1|b1|a1
+	punpckhbw xmm2, xmm7 		; xmm2=r2|g2|b2|a2|r3|g3|b3|a3 
 
 	movdqu xmm0, xmm1		
-	punpckhwd xmm0, xmm7		; xmm0=r0|g0|b0|a0 (unsigned int)
-	punpcklwd xmm1, xmm7		; xmm1=r1|g1|b1|a1 (unsigned int)
+	punpcklwd xmm0, xmm7		; xmm0=r0|g0|b0|a0 (unsigned int)
+	punpckhwd xmm1, xmm7		; xmm1=r1|g1|b1|a1 (unsigned int)
 	movdqu xmm3, xmm2
-	punpckhwd xmm2, xmm7		; xmm2=r2|g2|b2|a2 (unsigned int)
-	punpcklwd xmm3, xmm7		; xmm3=r3|g3|b3|a3 (unsigned int)
+	punpcklwd xmm2, xmm7		; xmm2=r2|g2|b2|a2 (unsigned int)
+	punpckhwd xmm3, xmm7		; xmm3=r3|g3|b3|a3 (unsigned int)
 
 	mov eax, r12d
         mov r10d, 255
@@ -66,7 +66,7 @@ sierpinski_asm:
 	cvtdq2ps xmm5, xmm5
 	cvtdq2ps xmm6, xmm6		; pasar a float porque no hay div entera con pack
 	divps xmm5, xmm6 		; xmm5=j*255/cols|(j+1)*255/cols|(j+2)*255/cols|(j+3)*255/cols (float)
-	cvtps2dq xmm5, xmm5 		; ahora son unsigned int
+	cvttps2dq xmm5, xmm5 		; ahora son unsigned int
 
 	pxor xmm4, xmm5 		; xmm4=coef(i,j)*255|coef(i,j+1)*255|coef(i,j+2)*255|coef(i,j+3)*255 (unsigned int)
 
@@ -77,37 +77,37 @@ sierpinski_asm:
 	pmulld xmm0, xmm5		; xmm0*xmm5
 	cvtdq2ps xmm0, xmm0		; xmm0->float
 	divps xmm0, xmm6		; xmm0/255
-	cvtps2dq xmm0, xmm0		; xmm0->unsigned int
+	cvttps2dq xmm0, xmm0		; xmm0->unsigned int
 
 	movdqu xmm5, xmm4
 	pshufd xmm5, xmm5, 0x55		; xmm5=coef(i,j+1)*255|coef(i,j+1)*255|coef(i,j+1)*255|coef(i,j+1)*255 (unsigned int)
 	pmulld xmm1, xmm5		; xmm1*xmm5
 	cvtdq2ps xmm1, xmm1		; xmm1->float
 	divps xmm1, xmm6		; xmm1/255
-	cvtps2dq xmm1, xmm1		; xmm1->unsigned int
+	cvttps2dq xmm1, xmm1		; xmm1->unsigned int
 
 	movdqu xmm5, xmm4
 	pshufd xmm5, xmm5, 0xaa		; xmm5=coef(i,j+2)*255|coef(i,j+2)*255|coef(i,j+2)*255|coef(i,j+2)*255 (unsigned int)
 	pmulld xmm2, xmm5		; xmm2*xmm5
 	cvtdq2ps xmm2, xmm2		; xmm2->float
 	divps xmm2, xmm6		; xmm2/255
-	cvtps2dq xmm2, xmm2		; xmm2->unsigned int
+	cvttps2dq xmm2, xmm2		; xmm2->unsigned int
 
 	pshufd xmm4, xmm4, 0xff		; xmm4=coef(i,j+3)*255|coef(i,j+3)*255|coef(i,j+3)*255|coef(i,j+3)*255 (unsigned int)
 	pmulld xmm3, xmm4		; xmm3*xmm4
 	cvtdq2ps xmm3, xmm3		; xmm3->float
 	divps xmm3, xmm6		; xmm3/255
-	cvtps2dq xmm3, xmm3		; xmm3->unsigned int
+	cvttps2dq xmm3, xmm3		; xmm3->unsigned int
 
-	packusdw xmm1, xmm0		; volver a empaquetar todo en xmm3
-	packusdw xmm3, xmm2
-	packuswb xmm3, xmm1
+	packusdw xmm0, xmm1		; volver a empaquetar todo en xmm3
+	packusdw xmm2, xmm3
+	packuswb xmm0, xmm2
 
-	movdqu [rsi+rbx], xmm3 		; pongo en el destino (rbx no lo toqué)
+	movdqu [rsi+rbx], xmm0 		; pongo en el destino (rbx no lo toqué)
 
-        inc r13d 			; j++
+        add r13d, 4 			; j++
         cmp r13d, r14d
-        jne .cicloc
+        jl .cicloc
 
         inc r12d 			; i++
         cmp r12d, ecx
