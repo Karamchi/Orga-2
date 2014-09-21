@@ -20,10 +20,10 @@ sierpinski_asm:
         push r13
         push r14
 
-	mov r14d, edx			;lo vuá necesitá
-        mov r12d, 0 			;i
+	mov r14d, edx			; edx lo voy a necesitar
+        mov r12d, 0 			; i
     .ciclof:
-        mov r13, 0 			;j (PIXEL) (y limpio la parte alta)
+        mov r13, 0 			; j (PIXEL) (y limpio la parte alta)
     .cicloc:
 
 	xor rbx, rbx
@@ -99,7 +99,7 @@ sierpinski_asm:
 	divps xmm3, xmm6		; xmm3/255
 	cvttps2dq xmm3, xmm3		; xmm3->unsigned int
 
-	packusdw xmm0, xmm1		; volver a empaquetar todo en xmm3
+	packusdw xmm0, xmm1		; volver a empaquetar todo en xmm0
 	packusdw xmm2, xmm3
 	packuswb xmm0, xmm2
 
