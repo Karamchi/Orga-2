@@ -1,5 +1,6 @@
 
 #include "tp2.h"
+#include "tiempo.h"
 
 #define MIN(x,y) ( x < y ? x : y )
 #define MAX(x,y) ( x > y ? x : y )
@@ -14,8 +15,12 @@ void mblur_c    (
     int src_row_size,
     int dst_row_size)
 {
+	unsigned long start, end;
+    MEDIR_TIEMPO_START(start)
+
     unsigned char (*src_matrix)[src_row_size] = (unsigned char (*)[src_row_size]) src;
     unsigned char (*dst_matrix)[dst_row_size] = (unsigned char (*)[dst_row_size]) dst;
+
 	
 	for (int i = 0; i < 2; i++)
     {
@@ -47,7 +52,9 @@ void mblur_c    (
             *p_d = *p_s;  */
         }
     }
- 
+	MEDIR_TIEMPO_STOP(end);
+	unsigned long delta = end - start;
+	printf("%lu ciclos\n", delta);
 }
 
 

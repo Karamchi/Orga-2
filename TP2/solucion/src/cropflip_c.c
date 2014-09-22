@@ -1,5 +1,6 @@
 
 #include "tp2.h"
+#include "tiempo.h"
 
 
 void cropflip_c    (
@@ -14,6 +15,8 @@ void cropflip_c    (
 	int offsetx,
 	int offsety)
 {
+	unsigned long start, end;
+	MEDIR_TIEMPO_START(start)
 	unsigned char (*src_matrix)[src_row_size] = (unsigned char (*)[src_row_size]) src;
 	unsigned char (*dst_matrix)[dst_row_size] = (unsigned char (*)[dst_row_size]) dst;
 	
@@ -23,4 +26,7 @@ void cropflip_c    (
 			dst_matrix[i][j]=src_matrix[tamy+offsety-i-1][offsetx*4+j];
 		}
 	} 
+	MEDIR_TIEMPO_STOP(end);
+	unsigned long delta = end - start;
+	printf("%lu ciclos\n", delta);
 }

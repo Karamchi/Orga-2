@@ -1,8 +1,10 @@
 global sierpinski_asm
+extern fopen, fclose, fprintf
 
 section .data
 unodostres: DD 0,1,2,3
 doscincocinco: DD 255,255,255,255
+nombre: DB "sierpinksi_asm.time",0
 
 section .text
 
@@ -21,6 +23,12 @@ sierpinski_asm:
         push r14
 
 	mov r14d, edx			; edx lo voy a necesitar
+
+	rdtsc				; imprime el tiempo en edx y eax
+	mov r10d, eax
+	shl r10, 4
+	mov r10d, edx
+
         mov r12d, 0 			; i
     .ciclof:
         mov r13, 0 			; j (PIXEL) (y limpio la parte alta)
@@ -112,6 +120,28 @@ sierpinski_asm:
         inc r12d 			; i++
         cmp r12d, ecx
         jne .ciclof
+
+	rdtsc				; imprime el tiempo en edx y eax
+	mov r11d, eax
+	shl r11, 4
+	mov r11d, edx
+	
+	sub r11, r10			
+
+	mov rdi, nombre
+	mov qword [rsp], "a"
+	mov rsi, rsp
+	call fopen
+	mov r12, rax
+	
+	mov rdi, r12
+	mov qword [rsp], "%lu"
+	mov rsi, rsp
+	mov rdx, r11
+	call fprintf
+
+	mov rdi, r12
+	call fclose
 
 	pop r14
         pop r13

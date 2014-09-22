@@ -1,4 +1,9 @@
 global cropflip_asm
+extern fopen, fclose, fprintf
+
+section .data
+nombre: DB"cropflip_asm.time",0
+
 
 section .text
 ;void tiles_asm(unsigned char *src,
@@ -20,6 +25,11 @@ cropflip_asm:
 	push r13
 	push r14
 	push r15
+
+	rdtsc				; imprime el tiempo en edx y eax
+	mov r10d, eax
+	shl r10, 4
+	mov r10d, edx
 
 	mov r12d, [rbp + 16] 	;r12 <-tamx
 	mov r13d, [rbp + 24]	;r13 <-tamy
@@ -58,7 +68,27 @@ cropflip_asm:
 		cmp r10, r13
 		jl .loopi
 
+	rdtsc				; imprime el tiempo en edx y eax
+	mov r11d, eax
+	shl r11, 4
+	mov r11d, edx
+	
+	sub r11, r10
 
+	mov rdi, nombre
+	mov qword [rsp], "a"
+	mov rsi, rsp
+	call fopen	
+	mov r12, rax
+	
+	mov rdi, r12
+	mov qword [rsp], "%lu"
+	mov rsi, rsp
+	mov rdx, r11
+	call fprintf
+
+	mov rdi, r12
+	call fclose
 		
 	pop r15
 	pop r14
