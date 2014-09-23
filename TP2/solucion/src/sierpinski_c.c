@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include "tp2.h"
 #include "tiempo.h"
 
