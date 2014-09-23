@@ -2,6 +2,7 @@ global mblur_asm
 extern fopen, fclose, fprintf
 
 section .data
+align 16
 mascara_mul: DD 3277, 3277, 3277, 3277
 nombre: DB 'mblur_asm.time',0
 formato: DB '%lu ',10,0

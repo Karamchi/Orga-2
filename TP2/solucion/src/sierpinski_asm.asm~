@@ -1,11 +1,9 @@
 global sierpinski_asm
-extern fopen, fclose, fprintf
 
 section .data
+align 16
 unodostres: DD 0,1,2,3
 doscincocinco: DD 255,255,255,255
-nombre: DB 'sierpinski_asm.time',0
-formato: DB '%lu'
 
 section .text
 
@@ -22,15 +20,8 @@ sierpinski_asm:
         push r12
         push r13
         push r14
-	sub rsp, 16
 
 	mov r14d, edx			; edx lo voy a necesitar
-
-	rdtsc				; imprime el tiempo en edx y eax
-	mov r10d, edx
-	shl r10, 4
-	mov r10d, eax			
-
         mov r12d, 0 			; i
     .ciclof:
         mov r13, 0 			; j (PIXEL) (y limpio la parte alta)
@@ -58,8 +49,8 @@ sierpinski_asm:
 	punpckhwd xmm3, xmm7		; xmm3=r3|g3|b3|a3 (unsigned int)
 
 	mov eax, r12d
-        mov r11d, 255
-	mul r11d
+        mov r10d, 255
+	mul r10d
 	div ecx				; eax=i*255/filas
 	
 	movd xmm4, eax 			; xmm4=0|0|0|eax
@@ -72,7 +63,7 @@ sierpinski_asm:
 	movd xmm6, r14d			; xmm6=0|0|0|r14d
 	pshufd xmm6, xmm6, 0	 	; xmm6=r14d|r14d|r14d|r14d=cols|cols|cols|cols
 	pmulld xmm5, [doscincocinco]	; xmm5=j*255|(j+1)*255|(j+2)*255|(j+3)*255 (unsigned int)
-					; podria broadcastear r11d pero prefiero no usar otro registro xmm más
+					; podria broadcastear r10d pero prefiero no usar otro registro xmm más
 	cvtdq2ps xmm5, xmm5
 	cvtdq2ps xmm6, xmm6		; pasar a float porque no hay div entera con pack
 	divps xmm5, xmm6 		; xmm5=j*255/cols|(j+1)*255/cols|(j+2)*255/cols|(j+3)*255/cols (float)
@@ -123,28 +114,6 @@ sierpinski_asm:
         cmp r12d, ecx
         jne .ciclof
 
-	rdtsc				; imprime el tiempo en edx y eax
-	mov ebx, edx
-	shl rbx, 4
-	mov ebx, eax
-	
-	sub rbx, r10			
-
-	mov rdi, nombre
-	mov qword [rsp], 'a'
-	mov rsi, rsp
-	call fopen
-	mov r12, rax
-	
-	mov rdi, r12
-	mov rsi, formato
-	mov rdx, rbx
-	call fprintf
-
-	mov rdi, r12
-	call fclose
-
-	add rsp, 16
 	pop r14
         pop r13
         pop r12

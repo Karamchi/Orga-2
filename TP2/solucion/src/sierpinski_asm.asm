@@ -1,6 +1,7 @@
 global sierpinski_asm
 
 section .data
+align 16			; maaaagia
 unodostres: DD 0,1,2,3
 doscincocinco: DD 255,255,255,255
 

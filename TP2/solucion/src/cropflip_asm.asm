@@ -2,6 +2,7 @@ global cropflip_asm
 extern fopen, fclose, fprintf
 
 section .data
+align 16
 nombre: DB 'cropflip_asm.time',0
 formato: DB '%lu'
 
