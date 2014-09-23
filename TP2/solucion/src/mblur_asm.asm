@@ -135,10 +135,10 @@ mblur_asm:
 			movdqu [rax], xmm1
 			
 			add r11, 4
-			cmp r11, rcx
+			cmp r11, rbx
 			jl .loopj
 		inc r10
-		cmp r10, rbx
+		cmp r10, rcx
 		jl .loopi
 					
 	rdtsc				; imprime el tiempo en edx y eax
