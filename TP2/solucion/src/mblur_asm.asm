@@ -3,7 +3,8 @@ extern fopen, fclose, fprintf
 
 section .data
 mascara_mul: DD 3277, 3277, 3277, 3277
-nombre: DB "mblur_asm.time",0
+nombre: DB 'mblur_asm.time',0
+formato: DB '%lu ',10,0
 
 
 section .text
@@ -19,14 +20,14 @@ mblur_asm:
 	;rdi <- *src,  rsi <- *dst,  edx <- filas,  ecx <- cols,  r8d <- src_row_size,  r9d <- dst_row_size
 	push rbp
 	mov rbp, rsp
-
+	sub rsp, 16
 
 	mov ebx, edx	; guardo filas en rbx para que no me lo borre mul
 
 	rdtsc				; imprime el tiempo en edx y eax
-	mov r10d, eax
-	shl r10, 4
-	mov r10d, edx
+	mov r9d, edx
+	shl r9, 4
+	mov r9d, eax
 	
 	mov r8d, r8d
 	movdqu xmm14, [mascara_mul]
@@ -139,28 +140,28 @@ mblur_asm:
 		cmp r10, rbx
 		jl .loopi
 					
-		rdtsc				; imprime el tiempo en edx y eax
-	mov r11d, eax
-	shl r11, 4
-	mov r11d, edx
+	rdtsc				; imprime el tiempo en edx y eax
+	mov ebx, edx
+	shl rbx, 4
+	mov ebx, eax
 	
-	sub r11, r10			;y r11 por donde me lo meto?
-			
+	sub rbx, r9			;y r11 por donde me lo meto?
+	
 	mov rdi, nombre
-	mov qword [rsp], "a"
+	mov qword [rsp], 'a'
 	mov rsi, rsp
 	call fopen	
 	mov r12, rax
 	
 	mov rdi, r12
-	mov qword [rsp], "%lu"
-	mov rsi, rsp
-	mov rdx, r11
+	mov rsi, formato
+	mov rdx, rbx
 	call fprintf
 
 	mov rdi, r12
 	call fclose
 			
+	add rsp, 16
 	pop rbp
     ret
  

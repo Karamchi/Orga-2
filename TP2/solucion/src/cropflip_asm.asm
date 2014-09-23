@@ -2,7 +2,8 @@ global cropflip_asm
 extern fopen, fclose, fprintf
 
 section .data
-nombre: DB"cropflip_asm.time",0
+nombre: DB 'cropflip_asm.time',0
+formato: DB '%lu'
 
 
 section .text
@@ -25,11 +26,12 @@ cropflip_asm:
 	push r13
 	push r14
 	push r15
+	sub rsp, 16
 
 	rdtsc				; imprime el tiempo en edx y eax
-	mov r10d, eax
-	shl r10, 4
-	mov r10d, edx
+	mov ebx, edx
+	shl rbx, 4
+	mov ebx, eax
 
 	mov r12d, [rbp + 16] 	;r12 <-tamx
 	mov r13d, [rbp + 24]	;r13 <-tamy
@@ -69,27 +71,28 @@ cropflip_asm:
 		jl .loopi
 
 	rdtsc				; imprime el tiempo en edx y eax
-	mov r11d, eax
-	shl r11, 4
 	mov r11d, edx
+	shl r11, 4
+	mov r11d, eax
 	
-	sub r11, r10
+	sub r11, rbx
+	mov rbx, r11
 
 	mov rdi, nombre
-	mov qword [rsp], "a"
+	mov qword [rsp], 'a'
 	mov rsi, rsp
 	call fopen	
 	mov r12, rax
 	
-	mov rdi, r12
-	mov qword [rsp], "%lu"
-	mov rsi, rsp
-	mov rdx, r11
+	mov rdi, r12 
+	mov rsi, formato
+	mov rdx, rbx
 	call fprintf
 
 	mov rdi, r12
 	call fclose
 		
+	add rsp, 16
 	pop r15
 	pop r14
 	pop r13
