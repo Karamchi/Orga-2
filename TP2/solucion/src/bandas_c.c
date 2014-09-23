@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include "tp2.h"
 #include "tiempo.h"
 
@@ -44,5 +44,7 @@ void bandas_c (
 	}
 	MEDIR_TIEMPO_STOP(end);
 	unsigned long delta = end - start;
-	printf("%lu ciclos\n", delta);
+	FILE* archivo=fopen("bandas_c.time","a");
+	fprintf(archivo,"%lu ciclos\n", delta);
+	fclose(archivo);
 }

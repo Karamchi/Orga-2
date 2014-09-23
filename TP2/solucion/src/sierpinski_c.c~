@@ -1,4 +1,4 @@
-
+#include <stdio.h>
 #include "tp2.h"
 #include "tiempo.h"
 
@@ -26,5 +26,7 @@ void sierpinski_c    (
 	}
 	MEDIR_TIEMPO_STOP(end);
 	unsigned long delta = end - start;
-	printf("%lu ciclos\n", delta);
+	FILE* archivo=fopen("sierpinski_c.time","a"s);
+	fprintf(archivo,"%lu ciclos\n", delta);
+	fclose(archivo);
 }

@@ -54,7 +54,9 @@ void mblur_c    (
     }
 	MEDIR_TIEMPO_STOP(end);
 	unsigned long delta = end - start;
-	printf("%lu ciclos\n", delta);
+	FILE* archivo=fopen("mblur_c.time","a");
+	fprintf(archivo,"%lu ciclos\n", delta);
+	fclose(archivo);
 }
 
 
