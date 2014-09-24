@@ -3,6 +3,7 @@ extern fopen, fclose, fprintf
 
 section .data
 align 16
+mascara_negra: DB 0,0,0,255,0,0,0,255
 mascara_mul: DD 3277, 3277, 3277, 3277
 nombre: DB 'mblur_asm.time',0
 formato: DB '%lu ',10,0
@@ -18,28 +19,74 @@ section .text
 	;int dst_row_size)
 
 mblur_asm:
-	;rdi <- *src,  rsi <- *dst,  edx <- filas,  ecx <- cols,  r8d <- src_row_size,  r9d <- dst_row_size
+	;rdi <- *src,  rsi <- *dst,  ecx <- filas,  edx <- cols,  r8d <- src_row_size,  r9d <- dst_row_size
 	push rbp
 	mov rbp, rsp
-	sub rsp, 16
+	push rbx
+	push r12
+	push r13
+	sub rsp, 8
 
 	mov ebx, edx	; guardo filas en rbx para que no me lo borre mul
 
+	
 	rdtsc				; imprime el tiempo en edx y eax
-	mov r9d, edx
-	shl r9, 4
-	mov r9d, eax
+	mov r13d, edx
+	shl r13, 32
+	add r13d, eax
 	
 	mov r8d, r8d
 	movdqu xmm14, [mascara_mul]
 
 	mov ecx, ecx
+	
+	
+	;pongo en 0 los bordes
+	
+	xor r10, r10
+	mov r11, [mascara_negra]
+	.cicloh:
+		
+		
+		mov qword[rsi+r10*4], r11
+		lea rax, [r9+r10*4]
+		mov qword[rsi+rax], r11
+		
+		mov rax, rcx
+		sub rax, 2
+		mul r9d
+		add rax, rsi
+		mov qword[rax+r10*4], r11
+		add rax, r9
+		mov qword[rax+r10*4], r11
+		
+		
+		add r10, 2
+		cmp r10, rbx
+		jl .cicloh
+	
+	xor r10, r10
+	
+	.ciclov:
+		
+		mov rax, r10
+		mul r9d
+		mov qword[rsi+rax], r11
+		lea rax, [rax + r9 - 8]
+		mov qword[rsi+rax], r11
+		
+		inc r10
+		cmp r10, rcx
+		jl .ciclov
+		
+
+
 	sub ecx, 4		; le resto 4 a filas y cols para facilitar la comparacion
 	sub ebx, 4
 
 	xor r10, r10
 
-	.loopi:				;for i=0...folas-4
+	.loopi:				;for i=0...filas-4
 		
 		xor r11, r11
 
@@ -143,10 +190,10 @@ mblur_asm:
 					
 	rdtsc				; imprime el tiempo en edx y eax
 	mov ebx, edx
-	shl rbx, 4
-	mov ebx, eax
+	shl rbx, 32
+	add ebx, eax
 	
-	sub rbx, r9			;y r11 por donde me lo meto?
+	sub rbx, r13			;y r13 por donde me lo meto?
 	
 	mov rdi, nombre
 	mov qword [rsp], 'a'
@@ -162,7 +209,10 @@ mblur_asm:
 	mov rdi, r12
 	call fclose
 			
-	add rsp, 16
+	add rsp, 8
+	pop r13
+	pop r12
+	pop rbx
 	pop rbp
     ret
  
