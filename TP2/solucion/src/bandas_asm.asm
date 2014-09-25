@@ -120,7 +120,6 @@ bandas_asm:
 				por xmm1, xmm5
 				
 				movdqu xmm6, xmm0	;copia de xmm0
-				;pshuflw xmm1, xmm1, 0xE4	Me queda igua la parta alta y la baja
 				pshuflw xmm6, xmm1, 0x00	; la parte baja quedo <b, b, b, b> y la alta se copio lo de la parte alta de xmm1
 				pshufhw xmm0, xmm6, 0x55	; ahí me queda bien en el xmm0 la parte alta b1 y la baja con b0
 				
