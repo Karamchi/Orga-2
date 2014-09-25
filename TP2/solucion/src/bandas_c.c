@@ -19,9 +19,9 @@ void bandas_c (
 	
 	int b;
 	for (int i = 0; i < n ; i++){	// itero n filas
-		for (int j = 0; j < m * 4; j = j + 4 ){	// itero m * 4 columnas porque son de 4 bytes cada pixel. (rgba)
+		for (int j = 0; j < m; j ++ ){	// itero m * 4 columnas porque son de 4 bytes cada pixel. (rgba)
 			b = 0;	//reseteo el b
-			b = b + src_matrix[i][j] + src_matrix[i][j+1] + src_matrix[i][j+2];
+			b = src_matrix[i][j*4] + src_matrix[i][j*4+1] + src_matrix[i][j*4+2];
 			if (b<96) {
 				b=0;
 			} else if (b<288) {
@@ -37,9 +37,9 @@ void bandas_c (
 			if (b == 256){
 				b--;
 			}*/
-			dst_matrix[i][j] = b;
-			dst_matrix[i][j+1] = b;
-			dst_matrix[i][j+2] = b;
+			dst_matrix[i][j*4] = b;
+			dst_matrix[i][j*4 + 1] = b;
+			dst_matrix[i][j*4 + 2] = b;
 		}
 	}
 	MEDIR_TIEMPO_STOP(end);

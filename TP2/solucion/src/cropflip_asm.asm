@@ -4,7 +4,7 @@ extern fopen, fclose, fprintf
 section .data
 align 16
 nombre: DB 'cropflip_asm.time',0
-formato: DB '%lu'
+formato: DB '%lu ',10,0
 
 
 section .text
@@ -31,8 +31,8 @@ cropflip_asm:
 
 	rdtsc				; imprime el tiempo en edx y eax
 	mov ebx, edx
-	shl rbx, 4
-	mov ebx, eax
+	shl rbx, 32
+	add ebx, eax
 
 	mov r12d, [rbp + 16] 	;r12 <-tamx
 	mov r13d, [rbp + 24]	;r13 <-tamy
@@ -73,8 +73,8 @@ cropflip_asm:
 
 	rdtsc				; imprime el tiempo en edx y eax
 	mov r11d, edx
-	shl r11, 4
-	mov r11d, eax
+	shl r11, 32
+	add r11d, eax
 	
 	sub r11, rbx
 	mov rbx, r11
