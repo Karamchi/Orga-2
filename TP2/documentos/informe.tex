@@ -59,7 +59,8 @@
 \thispagestyle{empty}
 \vfill
 \begin{abstract}
-En el presente trabajo se describe la problemática de ...
+En este Trabajo Práctico se implementaron cuatro filtros de imagen en dos versiones: una en lenguaje C, y una en ASM haciendo uso de las instrucciones SSE, para realizar un análisis de la performance del procesador al utilizar el modelo de programación SIMD (Single Instruction Multiple Data). 
+
 \end{abstract}
 
 \thispagestyle{empty}
@@ -72,9 +73,20 @@ En el presente trabajo se describe la problemática de ...
 \newpage
 
 \section{Objetivos generales}
+(no sé qué más hacer que copiar un poco el enunciado)
+Este Trabajo Práctico tiene como objetivos principales explorar el modelo de programación SIMD (Single Instruction Multiple Data) y realizar un análisis riguroso de los resultados de performance del procesador al hacer uso de las intrucciones SSE. Para esto, se implementaron cuatro filtros en dos versiones: una en lenguaje C, y una en ASM haciendo uso de las instrucciones SSE. 
+Los filtros a aplicar son los siguientes:
+* Cropflip: recorta una imagen y la voltea verticalmente, según cuatro parámetros que indican que fracción rectangular de la imágen se conserva.
+(fórmula)
+* Sierpinski: oscurece los puntos de la imagen, generando una forma similar a un triángulo de sierpinski
+(fórmula)
+* Bandas: convierte la imagen a x tonos de gris
+(fórmula)
+* Motion blur: aplica un filtro de desenfoque en movimiento, aplicando a cada pixel un promedio de algunos pixeles cercanos
+(fórmula)
 
-Este Trabajo Práctico tiene como objetivos principales explorar el modelo de programación SIMD (Single Instruction Multiple Data) y realizar un análisis riguroso de los resultados de performance del procesador al hacer uso de las intrucciones SSE.
-Para esto, se implementaron cuatro filtros en dos versiones: una en lenguaje C, y una en ASM haciendo uso de las instrucciones SSE.
+Los filtros son aplicables a imagenes de distintos tamaños, y también a videos.
+Para cada experimento pensábamos realizar 10 mediciones, para descartar los outliers y calcular promedio y varianza 
 
 
 
@@ -87,6 +99,30 @@ Para esto, se implementaron cuatro filtros en dos versiones: una en lenguaje C, 
 	\label{nombreparareferenciar}
   \end{center}
 \end{figure}
+
+
+\subsection{Filtro cropflip}
+
+\subsection{Filtro sierpinski}
+En cada iteración de la implementación en assembler del filtro sierpinski se procesan cuatro pixeles. Esto permite manejar cada pixel en un registro, si se toman sus valores de r, g, b y a como enteros de 4 bytes o como decimales de precisión simple (floats). En cada iteración, se desempaquetan los pixeles en cuatro registros xmm, extendiendo sus valores a 4 bytes. Luego calcula el valor del coeficiente de cada pixel en otro registro xmm, conservándolo como entero y realizando todos los productos antes que las divisiones para evitar perder precisión, sabiendo que nunca pueden excederse de 4 bytes. Para relizar las divisiones enteras, como no hay una instrucción que permita hacerlas, se convierten los valores del registro a float, se realiza la división y se convierten, truncando, a enteros de 4 bytes. Finalmente, se multiplica el valor de cada pixel por el coeficiente correspondiente, se empaqueta el resultado en bytes y se asigna a los pixeles.
+{podemos poner pseudocódigo o imágenes, las imágenes venden, más allá de que terminen siendo scrinchots de calxcel}
+
+Al comparar la versión en assembler con la versión en C con las distintas optimizaciones, obtuvimos estos resultados:
+
+(gráfico)
+
+Se puede ver que las optimizaciones de C {no} reducen apreciablemente el tiempo de ejecución. El tiempo de ejecución en C es alrededor del ¿triple? del tiempo de ejecución en assembler. [Esto es lógico pero hay que justificarlo].
+
+Hallamos que el factor limitante era [la intensidad de cómputo/bus de memoria]. Se puede ver en los gráficos que los accesos a memoria {no} afectan más que las operaciones aritméticas.
+
+(gráfico)
+
+\subsection{Filtro bandas}
+En cada iteración de la implementación en assembler del filtro bandas se procesan dos pixeles. 
+
+
+\subsection{Filtro motion blur}
+
 
 
 \paragraph{\textbf{Titulo del parrafo} } Bla bla bla bla.
