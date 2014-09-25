@@ -1,0 +1,34 @@
+ASM SIN INFINITO
+32216 
+32059 
+33743 
+31474 
+31350 
+33635 
+32249 
+32225 
+31202 
+31647
+ASM CON INFINITO (4 cores)
+15447 
+14289 
+15504 
+15150 
+14364 
+14886 
+14595 
+15120 
+14871 
+15267 
+
+Promedio Asm sin Infinito (32180 ciclos)
+Varianza Asm sin Infinito (701062.6)
+
+Promedio Asm con Infinito (14949.3 ciclos)
+Varianza Asm con Infinito (163998.81)
+
+Promedio Asm sin Infinito sin Outliers (31978.33333 ciclos)
+Varianza Asm sin Infinito sin Ouliers (93538.55556)
+
+Promedio Asm con Infinito sin Outliers (14981.5 ciclos)
+Varianza Asm con Infinito sin Ouliers (49966.25)
