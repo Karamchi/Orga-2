@@ -8,11 +8,11 @@ files[1]="mblur"
 files[2]="bandas"
 files[3]="sierpinski"
 
-rm *.time
-rm tiempos/*
-mkdir tiempos
-mkdir Objdump
-mkdir Objdump/"${files[@]}"
+rm -f *.time
+rm -f tiempos/*
+mkdir -p tiempos
+mkdir -p Objdump
+mkdir -p Objdump/"${files[@]}"
 
 for op in "${ops[@]}"
 do
@@ -48,7 +48,7 @@ done
 
 for f in "${files[@]}" 
 do
-	python ../pyscripts/graficar.py tiempos/$f\_c* tiempos/$f\_asm.time
+	python ../pyscripts/graficar.py tiempos/$f\_c-O0.time tiempos/$f\_c-O1.time tiempos/$f\_c-O2.time tiempos/$f\_c-O3.time tiempos/$f\_asm.time
 done
 
 
