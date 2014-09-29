@@ -38,6 +38,15 @@ sierpinski_asm:
         mov r13, 0 			; j (PIXEL) (y limpio la parte alta)
     .cicloc:
 
+		mov [rsp], rbx
+		mov rbx, [rsp]
+		mov r10, [doscincocinco]
+		mov [doscincocinco], r10
+		mov [unodostres], rbx
+		mov rbx, [unodostres]
+		mov [rsp], rbx
+		mov rbx, [rsp]
+		
 		xor rbx, rbx
 		mov eax, r12d
 		mul r8d
@@ -117,6 +126,15 @@ sierpinski_asm:
 
 		movdqu [rsi+rbx], xmm0 		; pongo en el destino (rbx no lo toqué)
 
+		mov [rsp], rbx
+		mov rbx, [rsp]
+		mov r10, [doscincocinco]
+		mov [doscincocinco], r10
+		mov [unodostres], rbx
+		mov rbx, [unodostres]
+		mov [rsp], rbx
+		mov rbx, [rsp]
+
         add r13d, 4 			; j++
         cmp r13d, r14d
         jl .cicloc
@@ -128,8 +146,8 @@ sierpinski_asm:
         
     	rdtsc				; imprime el tiempo en edx y eax
 		mov r10d, edx
-		shl r10, 4
-		mov r10d, eax
+		shl r10, 32
+		add r10d, eax
 	
 		sub r10, r11
 		mov rbx, r10

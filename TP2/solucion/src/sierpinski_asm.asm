@@ -26,7 +26,8 @@ sierpinski_asm:
     	add rsp, 16
 
 		mov r14d, edx			; edx lo voy a necesitar
-	
+
+		lfence	
 		rdtsc				; imprime el tiempo en edx y eax
 		mov r11d, edx
 		shl r11, 32
@@ -37,7 +38,7 @@ sierpinski_asm:
     .ciclof:
         mov r13, 0 			; j (PIXEL) (y limpio la parte alta)
     .cicloc:
-
+	
 		xor rbx, rbx
 		mov eax, r12d
 		mul r8d
@@ -117,6 +118,7 @@ sierpinski_asm:
 
 		movdqu [rsi+rbx], xmm0 		; pongo en el destino (rbx no lo toqué)
 
+
         add r13d, 4 			; j++
         cmp r13d, r14d
         jl .cicloc
@@ -125,7 +127,7 @@ sierpinski_asm:
         cmp r12d, ecx
         jne .ciclof
         
-        
+	lfence
     	rdtsc				; imprime el tiempo en edx y eax
 		mov r10d, edx
 		shl r10, 32

@@ -45,6 +45,7 @@ bandas_asm:
 	
 	mov r14d, edx
 	
+	lfence
 	rdtsc				; imprime el tiempo en edx y eax
 	mov r10d, edx
 	shl r10, 32
@@ -135,7 +136,8 @@ bandas_asm:
 		jmp .ciclo_f
 
 	.termine:
-	
+		
+		lfence
 		rdtsc				; imprime el tiempo en edx y eax
 		mov r11d, edx
 		shl r11, 32

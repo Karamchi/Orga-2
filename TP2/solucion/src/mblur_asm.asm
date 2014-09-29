@@ -29,7 +29,7 @@ mblur_asm:
 
 	mov ebx, edx	; guardo filas en rbx para que no me lo borre mul
 
-	
+	lfence
 	rdtsc				; imprime el tiempo en edx y eax
 	mov r13d, edx
 	shl r13, 32
@@ -187,7 +187,8 @@ mblur_asm:
 		inc r10
 		cmp r10, rcx
 		jl .loopi
-					
+		
+	lfence			
 	rdtsc				; imprime el tiempo en edx y eax
 	mov ebx, edx
 	shl rbx, 32

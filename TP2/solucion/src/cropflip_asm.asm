@@ -29,6 +29,7 @@ cropflip_asm:
 	push r15
 	sub rsp, 16
 
+	lfence
 	rdtsc				; imprime el tiempo en edx y eax
 	mov ebx, edx
 	shl rbx, 32
@@ -71,6 +72,7 @@ cropflip_asm:
 		cmp r10, r13
 		jl .loopi
 
+	lfence
 	rdtsc				; imprime el tiempo en edx y eax
 	mov r11d, edx
 	shl r11, 32
