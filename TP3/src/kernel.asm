@@ -7,8 +7,7 @@
 
 global start
 extern GDT_DESC
-extern habilitar_A20 ;Manzana
-
+		
 ;; Saltear seccion de datos
 jmp start
 
@@ -69,69 +68,65 @@ BITS 32
 	mov fs, ax
 
     ; Establecer la base de la pila
-    mov ebp, 0x2700 
+	mov ebp, 0x27000
 	mov esp, ebp
 
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mr iniciando_mr_msg, iniciando_mr_len, 0x07, 0, 0
 
     ; Inicializar pantalla. NO HAY LOS REGISTROS R!
-	push r12d
-	push r13d
-	push r14d
 
-	xor r13d, r13d				; columna
-	inc r13d
-    mov r14d, 0xB8000         ; edi = dirección
+	push ebp
+	mov ebp, 0x160
+	xor ecx, ecx				; columna
+	inc ecx
+    	mov esi, 0xB8000		        ; lugar donde empieza la pantalla
 
-	.col_roja:
-	mov eax, r12d
-	mul 100
-	add eax, r14d
-	lea edi, [eax+r13d*2]
+    .col_roja:
+	mov eax, 0
+	mul ebp
+	add eax, esi
+	lea edi, [eax+ecx*2]
 
-	mov [edi], 0x4
+	mov word [edi], 0x4
 
-	inc r12d
-	cmp r12d, 49
-	jne .col_azul
+	inc ebx
+	cmp ebx, 49
+	jne .col_roja
 
-	.cicloi:
-    xor r12d, r12d				; fila
+    .cicloi:
+   	xor ebx, ebx				; fila
 
-	.cicloj:
-	mov eax, r12d
-	mul 100
-	add eax, r14d
-	lea edi, [eax+r13d*2]
+    .cicloj:
+	mov eax, ebx
+	mul ebp
+	add eax, esi
+	lea edi, [eax+ecx*2]
 
-	mov [edi], 0x2
+	mov dword [edi], 0x2
 
-	inc r12d
+	inc ebx
 
-	cmp r12d, 49
+	cmp ebx, 49
 	jne .cicloj
 
-	inc r13d
-	cmp r13d, 79
+	inc ecx
+	cmp ecx, 79
 	jne .cicloi
 
-	.col_azul:
-	mov eax, r12d
-	mul 100
-	add eax, r14d
-	lea edi, [eax+r13d*2]
+    .col_azul:
+	mov eax, ebx
+	mul ebp
+	add eax, esi
+	lea edi, [eax+ecx*2]
 
-	mov [edi], 0x1
+	mov dword [edi], 0x1
 
-	inc r12d
-	cmp r12d, 49
+	inc ebx
+	cmp ebx, 49
 	jne .col_azul
 	
-	pop r14d
-	pop r13d
-	pop r12d
-	
+	pop ebp
    
 	; Inicializar el manejador de memoria
  
