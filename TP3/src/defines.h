@@ -28,7 +28,13 @@
 /* -------------------------------------------------------------------------- */
 #define GDT_COUNT 30
 
-#define GDT_IDX_NULL_DESC           0
+#define GDT_CODIGO_0		8
+#define GDT_DATOS_0		9
+#define GDT_CODIGO_3		10
+#define GDT_DATOS_3		11
+#define GDT_AREA_PANTALLA	12
+
+#define GDT_IDX_NULL_DESC        0
 
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */
