@@ -10,8 +10,14 @@
 void mmu_inicializar() {
 }
 
+void mmu_inicializar_dir_kernel(){	
+	page_directory[0] = (page_dir_entry) {		//ACA SERÍA 
+		
+	},
+}
 
-
+page_dir_entry page_directory[1024]{
+}
 
 
 

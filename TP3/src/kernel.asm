@@ -6,7 +6,10 @@
 %include "imprimir.mac"
 
 global start
+extern IDT_DESC
 extern GDT_DESC
+extern idt_inicializar
+extern page_directory
 		
 ;; Saltear seccion de datos
 jmp start
@@ -77,7 +80,6 @@ BITS 32
     	mov esi, 0xB8000		        ; lugar donde empieza la pantalla
 	
 	; pinto todo de verde 
-
    	xor ebx, ebx				
 
     .ciclo:
@@ -102,7 +104,6 @@ BITS 32
 	
 
 	pop ebp
-   
 	; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
@@ -110,7 +111,11 @@ BITS 32
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-    
+    mov eax, page_directory
+	mov cr3, eax
+	mov eax, cr0
+	or eax, 0x80000000 ;habilitamos paginacion
+	mov cr0, eax
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -118,9 +123,12 @@ BITS 32
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-    
+       	xchg bx, bx
+	call idt_inicializar
+	
     ; Cargar IDT
- 
+    lidt [IDT_DESC]
+
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial
