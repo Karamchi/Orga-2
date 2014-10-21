@@ -6,6 +6,7 @@
 */
 
 #include "gdt.h"
+#include <stdio.h>
 
 gdt_entry gdt[GDT_COUNT] = {
     /* Descriptor nulo*/
@@ -92,7 +93,7 @@ gdt_entry gdt[GDT_COUNT] = {
     },
 
     [GDT_AREA_PANTALLA] = (gdt_entry) {
-        (unsigned short)    0x1F40,         /* limit[0:15]  */
+        (unsigned short)    0x1F3F,         /* limit[0:15]  */
         (unsigned short)    0x8000,         /* base[0:15]   */
         (unsigned char)     0x0B,           /* base[23:16]  */
         (unsigned char)     0x03,           /* type         */
