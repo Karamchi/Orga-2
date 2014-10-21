@@ -70,7 +70,7 @@ BITS 32
 	mov esp, ebp
 
     ; Imprimir mensaje de bienvenida
-    imprimir_texto_mr iniciando_mr_msg, iniciando_mr_len, 0x07, 0, 0
+    imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 0, 0
 
     ; Inicializar pantalla. NO HAY LOS REGISTROS R!
 
