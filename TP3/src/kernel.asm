@@ -72,58 +72,35 @@ BITS 32
     ; Imprimir mensaje de bienvenida
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 0, 0
 
-    ; Inicializar pantalla. NO HAY LOS REGISTROS R!
+    ; Inicializar pantalla. 
 
-	push ebp
-	mov ebp, 0x160
-	xor ecx, ecx				; columna
-	inc ecx
     	mov esi, 0xB8000		        ; lugar donde empieza la pantalla
-
-    .col_roja:
-	mov eax, 0
-	mul ebp
-	add eax, esi
-	lea edi, [eax+ecx*2]
-
-	mov word [edi], 0x4
-
-	inc ebx
-	cmp ebx, 49
-	jne .col_roja
-
-    .cicloi:
-   	xor ebx, ebx				; fila
-
-    .cicloj:
-	mov eax, ebx
-	mul ebp
-	add eax, esi
-	lea edi, [eax+ecx*2]
-
-	mov dword [edi], 0x2
-
-	inc ebx
-
-	cmp ebx, 49
-	jne .cicloj
-
-	inc ecx
-	cmp ecx, 79
-	jne .cicloi
-
-    .col_azul:
-	mov eax, ebx
-	mul ebp
-	add eax, esi
-	lea edi, [eax+ecx*2]
-
-	mov dword [edi], 0x1
-
-	inc ebx
-	cmp ebx, 49
-	jne .col_azul
 	
+	; pinto todo de verde 
+
+   	xor ebx, ebx				
+
+    .ciclo:
+	mov dword [esi+ebx], 0x20202020
+	add ebx, 4
+	
+	cmp ebx, 8000
+	jl .ciclo
+
+	
+	;pinto bordes	
+	mov word [esi], 0x4020	;rojo, espacio
+	mov eax, 158
+
+    .col_bordes:
+	mov dword [eax + esi], 0x40201020	;rojo, espacio, azul, espacio
+
+	add eax, 160
+	cmp eax, 7840	; 49*160
+	jl .col_bordes
+	mov word [esi+eax], 0x1020	;azul, espacio
+	
+
 	pop ebp
    
 	; Inicializar el manejador de memoria
