@@ -106,7 +106,7 @@ BITS 32
 	mov word [esi+eax], 0x1020	;azul, espacio
 	
 	pop ebp
-	       	xchg bx, bx
+
 	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 80-grupo_len
 	
 	
@@ -117,11 +117,11 @@ BITS 32
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-    mov eax, page_directory
-	mov cr3, eax
-	mov eax, cr0
-	or eax, 0x80000000 ;habilitamos paginacion
-	mov cr0, eax
+    ; mov eax, page_directory
+	; mov cr3, eax
+	; mov eax, cr0
+	;or eax, 0x80000000 ;habilitamos paginacion
+	; mov cr0, eax
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -134,7 +134,8 @@ BITS 32
 	
     ; Cargar IDT
     lidt [IDT_DESC]
-
+   	xchg bx, bx
+   	int 0x02
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial

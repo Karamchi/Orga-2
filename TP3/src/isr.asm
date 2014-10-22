@@ -33,12 +33,12 @@ _isr%1:
     mov esi, 0x043A0F54	; 'T:'
     mov [edi+4], esi
     
-    add eax, 65				; eax era el numero de interrupcion, lo pasamos a letra para imprimirlo en un solo caracter (esta en al)
+    add eax, 30				; eax era el numero de interrupcion, lo pasamos a letra para imprimirlo en un solo caracter (esta en al)
     mov [edi+8], al
     mov byte[edi+9], 0x0F	; 0F es el color blanco
     
     
-    jmp $
+    ;jmp $
 
 %endmacro
 
