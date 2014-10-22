@@ -23,6 +23,9 @@ iniciando_mr_len equ    $ - iniciando_mr_msg
 iniciando_mp_msg db     'Iniciando kernel (Modo Protegido)...'
 iniciando_mp_len equ    $ - iniciando_mp_msg
 
+grupo_msg db     'Aires Criollos - Parrillada completa'
+grupo_len equ    $ - grupo_msg
+
 ;;
 ;; Seccion de código.
 ;; -------------------------------------------------------------------------- ;;
@@ -102,8 +105,11 @@ BITS 32
 	jl .col_bordes
 	mov word [esi+eax], 0x1020	;azul, espacio
 	
-
 	pop ebp
+	       	xchg bx, bx
+	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 80-grupo_len
+	
+	
 	; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
@@ -123,7 +129,7 @@ BITS 32
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-       	xchg bx, bx
+
 	call idt_inicializar
 	
     ; Cargar IDT
