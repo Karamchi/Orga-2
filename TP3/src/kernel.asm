@@ -134,8 +134,7 @@ BITS 32
 	
     ; Cargar IDT
     lidt [IDT_DESC]
-   	xchg bx, bx
-   	int 0x02
+   	int 0x06
     ; Configurar controlador de interrupciones
 
     ; Cargar tarea inicial
@@ -149,6 +148,7 @@ BITS 32
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
+    xchg bx, bx
     jmp $
     jmp $
 
