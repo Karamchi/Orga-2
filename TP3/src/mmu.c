@@ -13,9 +13,23 @@ void mmu_inicializar() {
 void mmu_inicializar_dir_kernel() {
 	page_dir_entry* pdep =(page_dir_entry*)0x27000;
 	int i;
+	*pdep = (page_dir_entry) { 
+	    (unsigned int)    0x28000,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x01,
+	    (unsigned char)   0x01,
+	};
+	page_table_entry* ptep =(page_table_entry*)0x27000;
 	for (i=0; i <1024; i=i+1) {
-		*pdep = (page_dir_entry) { 
-		    (unsigned int)    i,
+		*ptep = (page_table_entry) { 
+		    (unsigned int)    0x00,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
@@ -30,10 +44,8 @@ void mmu_inicializar_dir_kernel() {
 	}
 };
 
-
-//TIENE Q ESTAR CREADA EN LA DIRECCION 0x27000
-/*page_dir_entry page_directory[1024]{
-}*/
+void pedir_pagina(){
+}
 
 //IDENTITY MAPPING.
 

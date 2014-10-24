@@ -119,11 +119,13 @@ BITS 32
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-    ; mov eax, page_directory
+    	     xchg bx, bx
+	 mov eax, page_directory
 	 mov cr3, eax
 	 mov eax, cr0
 	or eax, 0x80000000 ;habilitamos paginacion
 	 mov cr0, eax
+
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -150,7 +152,6 @@ BITS 32
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
-    xchg bx, bx
     jmp $
     jmp $
 
