@@ -10,7 +10,7 @@ extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
 extern mmu_inicializar_dir_kernel
-extern page_directory
+;extern page_directory
 		
 ;; Saltear seccion de datos
 jmp start
@@ -113,16 +113,16 @@ BITS 32
 	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 80-grupo_len
 	
 	
-	; Inicializar el manejador de memoria
+    ; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-       	     xchg bx, bx
-		call mmu_inicializar_dir_kernel
+       	xchg bx, bx
+	call mmu_inicializar_dir_kernel
 		
     ; Cargar directorio de paginas
 
-	 mov eax, page_directory
-	 mov cr3, eax
+	;mov eax, page_directory HAY Q VER ESTO!! DEBERIAMOS MOVER 0x27000
+	mov cr3, eax
 		
     ; Habilitar paginacion
 

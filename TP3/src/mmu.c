@@ -25,11 +25,29 @@ void mmu_inicializar_dir_kernel() {
 	    (unsigned char)   0x01,
 	    (unsigned char)   0x01,
 	};
-/*	page_table_entry* ptep =(page_table_entry*)0x28000;
+	pdep = pdep + 1; //Aumento al siguiente elemento
 	int i;
-	for (i=0; i <1024; i=i+1) {
+	for (i=0; i<1023; i= i+1){
+		*pdep = (page_dir_entry) {			
+			(unsigned int)    0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+		};
+	    pdep = pdep +1;
+	}
+	page_table_entry* ptep =(page_table_entry*)0x28000;
+	int j;
+	for (j=0; j <1024; j=j+1) {
 		*ptep = (page_table_entry) { 
-		    (unsigned int)    i*0x1000,
+		    (unsigned int)    j*0x1000,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
@@ -41,7 +59,8 @@ void mmu_inicializar_dir_kernel() {
 		    (unsigned char)   0x01,
 		    (unsigned char)   0x01,
 		};
-	}*/
+		ptep = ptep + 1;
+	}
 }
 
 void pedir_pagina(){
