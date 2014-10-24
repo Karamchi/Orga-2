@@ -9,6 +9,7 @@ global start
 extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
+extern mmu_inicializar_dir_kernel
 extern page_directory
 		
 ;; Saltear seccion de datos
@@ -115,15 +116,18 @@ BITS 32
 	; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-
+       	     xchg bx, bx
+		call mmu_inicializar_dir_kernel
+		
     ; Cargar directorio de paginas
 
-    ; Habilitar paginacion
-    	     xchg bx, bx
 	 mov eax, page_directory
 	 mov cr3, eax
+		
+    ; Habilitar paginacion
+
 	 mov eax, cr0
-	or eax, 0x80000000 ;habilitamos paginacion
+	 or eax, 0x80000000 ;habilitamos paginacion
 	 mov cr0, eax
 
     ; Inicializar tss
