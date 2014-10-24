@@ -44,8 +44,8 @@ typedef struct str_page_table_entry {
     unsigned char   p:1;
 } __attribute__((__packed__, aligned (8))) page_table_entry;
 
-extern str_page_dir_entry page_directory;
-extern str_page_table_entry page_table;
+extern page_dir_entry page_directory;
+extern page_table_entry page_table;
 
 
 #endif	/* !__MMU_H__ */

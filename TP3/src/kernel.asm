@@ -31,7 +31,9 @@ grupo_len equ    $ - grupo_msg
 ;; -------------------------------------------------------------------------- ;;
 
 ;; Punto de entrada del kernel.
+
 BITS 16
+
 start:
     ; Deshabilitar interrupciones
     cli
@@ -118,10 +120,10 @@ BITS 32
 
     ; Habilitar paginacion
     ; mov eax, page_directory
-	; mov cr3, eax
-	; mov eax, cr0
-	;or eax, 0x80000000 ;habilitamos paginacion
-	; mov cr0, eax
+	 mov cr3, eax
+	 mov eax, cr0
+	or eax, 0x80000000 ;habilitamos paginacion
+	 mov cr0, eax
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
