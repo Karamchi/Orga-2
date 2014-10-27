@@ -40,6 +40,35 @@ void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, un
     }
 }
 
-
+void pintar_buffer_video() {
+	/*Esta funcion pinta el buffer de video que esta en la posicion 0xb8000 (80x50) con la parte inferior y una línea negra arriba 
+	va a haber que modificarla para adaptarse a cualquier entrada de datos
+	*/
+	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+	int i;
+	int j;
+	for(i=0;i<80;i++) {
+		p[0][i] = (ca){' ',0};
+		
+		p[45][i] = (ca){' ',0};
+		p[46][i] = (ca){' ',0};
+		p[47][i] = (ca){' ',0};
+		p[48][i] = (ca){' ',0};
+		p[49][i] = (ca){' ',0};
+	}
+	for (i=1; i<9; i++) {
+		p[46][4+i*2] = (ca){i+48,0x0f};
+		p[46][60+i*2] = (ca){i+48,0x0f};
+	}
+	for(i=35; i<40; i++) {
+		for (j=45; j<50; j++) {
+			p[j][i]=(ca){' ',0x40};
+			p[j][i+5]=(ca){' ',0x10};
+		}
+	}
+	/*
+		aca faltaría escribir la info de los relojes, el puntaje, cant de zombies, etc
+	*/
+}
 
 

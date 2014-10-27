@@ -109,7 +109,6 @@ gdt_entry gdt[GDT_COUNT] = {
     },
 
 
-
 };
 
 gdt_descriptor GDT_DESC = {

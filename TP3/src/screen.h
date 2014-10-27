@@ -24,5 +24,6 @@ void print(const char * text, unsigned int x, unsigned int y, unsigned short att
 
 void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, unsigned short attr);
 
+void pintar_buffer_video();
 
 #endif  /* !__SCREEN_H__ */

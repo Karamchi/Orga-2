@@ -11,7 +11,8 @@ extern GDT_DESC
 extern idt_inicializar
 extern mmu_inicializar_dir_kernel
 ;extern page_directory
-		
+extern pintar_buffer_video
+	
 ;; Saltear seccion de datos
 jmp start
 
@@ -108,7 +109,8 @@ BITS 32
 	jl .col_bordes
 	mov word [esi+eax], 0x1020	;azul, espacio
 	
-	pop ebp
+	call pintar_buffer_video ;manzana, aca quizas haya que pasar parametros en algun momento
+	;pop ebp
 
 	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 80-grupo_len
 	
@@ -117,15 +119,16 @@ BITS 32
  
     ; Inicializar el directorio de paginas
        	xchg bx, bx
+       	
 	call mmu_inicializar_dir_kernel
 		
     ; Cargar directorio de paginas
 
-	;mov eax, page_directory HAY Q VER ESTO!! DEBERIAMOS MOVER 0x27000
+	mov eax, 0x27000000; page_directory HAY Q VER ESTO!! DEBERIAMOS MOVER 0x27000
 	mov cr3, eax
 		
     ; Habilitar paginacion
-
+    
 	 mov eax, cr0
 	 or eax, 0x80000000 ;habilitamos paginacion
 	 mov cr0, eax
