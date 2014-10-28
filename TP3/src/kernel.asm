@@ -119,12 +119,13 @@ BITS 32
  
     ; Inicializar el directorio de paginas
        	xchg bx, bx
-       	
+       	pushad
 	call mmu_inicializar_dir_kernel
-		
+	popad
+	
     ; Cargar directorio de paginas
 
-	mov eax, 0x27000000; page_directory HAY Q VER ESTO!! DEBERIAMOS MOVER 0x27000
+	mov eax, 0x27000; page_directory HAY Q VER ESTO!!
 	mov cr3, eax
 		
     ; Habilitar paginacion
@@ -144,7 +145,7 @@ BITS 32
 	call idt_inicializar
 	
     ; Cargar IDT
-    lidt [IDT_DESC]
+    	lidt [IDT_DESC]
    	int 0x06
     ; Configurar controlador de interrupciones
 
