@@ -12,6 +12,9 @@ extern idt_inicializar
 extern mmu_inicializar_dir_kernel
 ;extern page_directory
 extern pintar_buffer_video
+extern deshabilitar_pic
+extern resetear_pic
+extern habilitar_pic
 	
 ;; Saltear seccion de datos
 jmp start
@@ -146,8 +149,13 @@ BITS 32
 	
     ; Cargar IDT
     	lidt [IDT_DESC]
-   	int 0x06
+   	;int 0x06
+   	
     ; Configurar controlador de interrupciones
+    
+    call resetear_pic
+    call habilitar_pic
+    sti
 
     ; Cargar tarea inicial
 
@@ -160,6 +168,8 @@ BITS 32
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
+    xchg bx,bx
+    int 0x66
     jmp $
     jmp $
 
