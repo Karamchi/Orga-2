@@ -13,8 +13,13 @@
 #include "tss.h"
 #include "game.h"
 
+int pedir_pagina();
 void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
+void mmu_inicializar_dir_zombi(); 
+void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica); 
+void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
+unsigned int contador_pags;
 
 typedef struct str_page_dir_entry {
     unsigned char   p:1;

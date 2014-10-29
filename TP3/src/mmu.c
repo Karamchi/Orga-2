@@ -8,6 +8,7 @@
 #include "mmu.h"
 
 void mmu_inicializar() {
+	contador_pags = 0;
 }
 
 void mmu_inicializar_dir_kernel() {
@@ -68,9 +69,31 @@ void mmu_inicializar_dir_kernel() {
 	}
 }
 
-void pedir_pagina(){
+int pedir_pagina(){
+	contador_pags++;
+	return 0x100000+(contador_pags-1)*0x1000;
 }
 
 //IDENTITY MAPPING.
+void mmu_inicializar_dir_zombi(){
+	
+
+/*TODO*/
+}
+void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica); {
+	cr3 >> 12;
+	
+	/*TODO*/
+}
+void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);{/*TODO*/}
+
+
+
+
+
+
+
+
+
 
 
