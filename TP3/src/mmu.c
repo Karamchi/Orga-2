@@ -7,6 +7,11 @@
 
 #include "mmu.h"
 
+
+int pos_mapa(int x, int y) {
+	return 0x400000+(x+78*y)*0x1000;
+}
+
 void mmu_inicializar() {
 	contador_pags = 0;
 }
@@ -14,6 +19,7 @@ void mmu_inicializar() {
 void mmu_inicializar_dir_kernel() {
 	page_dir_entry* pdep =(page_dir_entry*)0x27000;
 	int i;
+	// el page dir tiene 4 entries para mapear el kernel, el area libre y el mapa
 	for (i=0; i<4 ; i++){	
 		pdep[i] = (page_dir_entry) { 
 		    (unsigned char)   0x01,
@@ -29,7 +35,6 @@ void mmu_inicializar_dir_kernel() {
 		    (unsigned int)    0x28+i,
 		};
 	}
-	//pdep = pdep + 1; //Aumento al siguiente elemento
 	for (i=4; i<1024; i = i+1){
 		pdep[i] = (page_dir_entry) {			
 			(unsigned int)    0x00,
@@ -63,7 +68,7 @@ void mmu_inicializar_dir_kernel() {
 			    (unsigned char)   0x00,
 			    (unsigned int)    i+j*1024,
 			};
-			//ptep = ptep + 1;
+			
 		}
 		
 	}
@@ -71,21 +76,158 @@ void mmu_inicializar_dir_kernel() {
 
 int pedir_pagina(){
 	contador_pags++;
-	return 0x100000+(contador_pags-1)*0x1000;
+	return (0x100000+(contador_pags-1)*0x1000);
 }
 
 //IDENTITY MAPPING.
-void mmu_inicializar_dir_zombi(){
+void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
+	page_dir_entry* pd = (page_dir_entry*) pedir_pagina();
+	page_table_entry* pt = (page_table_entry*) pedir_pagina();
 	
-
+	pd[0] = (page_dir_entry) { 
+	    (unsigned char)   0x01,
+	    (unsigned char)   0x01,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned char)   0x00,
+	    (unsigned int)    pt,
+	};
+	int i;
+	for (i=1; i<1024; i++){
+		pd[i] = (page_dir_entry) {			
+			(unsigned int)    0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+		};
+	}
+	for (i=0; i <1024; i=i+1) {
+		pt[i] = (page_table_entry) { 
+		    (unsigned char)   0x01,
+		    (unsigned char)   0x01,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned char)   0x00,
+		    (unsigned int)    i,
+		};
+		
+	}
+	// copiamos el codigo
+	int* src;
+	if (jugador=='A') {
+		if (tipo=='G') src = (int*) 0x10000;
+		if (tipo=='M') src = (int*) 0x11000;
+		if (tipo=='C') src = (int*) 0x12000;
+	} else {
+		if (tipo=='G') src = (int*) 0x13000;
+		if (tipo=='M') src = (int*) 0x14000;
+		if (tipo=='C') src = (int*) 0x15000;
+	}
+	int* dst;
+	if (jugador=='A') { 
+		dst = (int*) pos_mapa(1, pos);
+	} else {
+		dst = (int*) pos_mapa(76, pos);
+	}
+	for (i=0; i<0x400; i++) {
+		dst[i]=src[i];
+	}
+		
 /*TODO*/
 }
-void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica); {
-	cr3 >> 12;
-	
-	/*TODO*/
+
+
+
+
+
+
+//pre: asumimos que virtual y fisica terminan en 0s (apuntan a una pagina)
+void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica){
+	cr3 = cr3 & 0xFFFFF000;
+	page_dir_entry* pd =(page_dir_entry*) cr3;
+	int off = virtual >> 22; // directory
+	page_table_entry* pt;
+	if (pd[off].p == 0) {
+		pt = (page_table_entry*) pedir_pagina();
+		int i;
+		for (i=0; i<1024; i = i+1){
+			pt[i] = (page_table_entry) {
+				(unsigned int)    0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+				(unsigned char)   0x00,
+			};
+		}
+		
+		pd[off] = (page_dir_entry){
+			(unsigned char)   0x01,
+			(unsigned char)   0x01,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned char)   0x00,
+			(unsigned int)    pt >> 12,
+		};
+	} else {
+		pt=(page_table_entry*) (pd[off].base << 12);
+	}
+	off = (virtual >> 12) & 0x000003FF; //table
+	pt[off] = (page_table_entry){
+		(unsigned char)   0x01,
+		(unsigned char)   0x01,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned char)   0x00,
+		(unsigned int)    fisica >> 12,
+	};
+	tlbflush();
 }
-void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);{/*TODO*/}
+
+// pre: asumimos que la pagina esta mapeada
+void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
+	cr3 = cr3 & 0xFFFFF000;
+	page_dir_entry* pd =(page_dir_entry*) cr3;
+	int off = virtual >> 22; // directory
+	page_table_entry* pt = (page_table_entry*) (pd[off].base << 12);
+	off = (virtual >> 12) & 0x000003FF;
+	pt[off].p = 0;
+	tlbflush();
+}
+
+
 
 
 
