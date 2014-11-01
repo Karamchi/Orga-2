@@ -92,7 +92,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x00,           /* base[31:24]  */
     },
 
-    [GDT_AREA_PANTALLA] = (gdt_entry) {
+    [GDT_PANTALLA] = (gdt_entry) {
         (unsigned short)    0x1F3F,         /* limit[0:15]  */
         (unsigned short)    0x8000,         /* base[0:15]   */
         (unsigned char)     0x0B,           /* base[23:16]  */
@@ -106,6 +106,38 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x01,           /* db           */
         (unsigned char)     0x01,           /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
+    },
+
+    [GDT_TAREA_INICIAL] = (gdt_entry) {
+        (unsigned short)    0x0067,         /* limit[0:15]  */	//Una tss tiene 104=68h, o sea, de 0 a 67h
+        (unsigned short)    0x01,           /* base[0:15]   */  //¿Acá iba fruta? ¿0xDEFECACACA?
+        (unsigned char)     0x01,           /* base[23:16]  */
+        (unsigned char)     0x09,           /* type         */ //10B1=1001
+        (unsigned char)     0x01,           /* s            */
+        (unsigned char)     0x00,           /* dpl          */ //?
+        (unsigned char)     0x01,           /* p            */
+        (unsigned char)     0x00,           /* limit[16:19] */
+        (unsigned char)     0x01,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     0x01,           /* db           */
+        (unsigned char)     0x01,           /* g            */ //?
+        (unsigned char)     0x01,           /* base[31:24]  */  
+    },
+
+    [GDT_IDLE] = (gdt_entry) {
+        (unsigned short)    0x0067,         /* limit[0:15]  */
+        (unsigned short)    0x01,           /* base[0:15]   */
+        (unsigned char)     0x01,           /* base[23:16]  */
+        (unsigned char)     0x09,           /* type         */
+        (unsigned char)     0x01,           /* s            */
+        (unsigned char)     0x00,           /* dpl          */
+        (unsigned char)     0x01,           /* p            */
+        (unsigned char)     0x00,           /* limit[16:19] */
+        (unsigned char)     0x01,           /* avl          */
+        (unsigned char)     0x00,           /* l            */
+        (unsigned char)     0x01,           /* db           */
+        (unsigned char)     0x01,           /* g            */
+        (unsigned char)     0x01,           /* base[31:24]  */
     },
 
 

@@ -139,6 +139,8 @@ BITS 32
 
     ; Inicializar tss
 
+	call tss_inicializar
+
     ; Inicializar tss de la tarea Idle
 
     ; Inicializar el scheduler
@@ -155,11 +157,12 @@ BITS 32
     
     call resetear_pic
     call habilitar_pic
-    sti
 
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
+
+    sti
 
     ; Saltar a la primera tarea: Idle
 
