@@ -42,7 +42,7 @@ typedef struct str_page_table_entry {
     unsigned int  	base:20;
 } __attribute__((__packed__, aligned (4))) page_table_entry;
 
-int pos_mapa(int x, int y);
+// int pos_mapa(int fila, int col); // devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
 
 int pedir_pagina();
 void mmu_inicializar();

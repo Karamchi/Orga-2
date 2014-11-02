@@ -6,10 +6,9 @@
 */
 
 #include "mmu.h"
-
-
-int pos_mapa(int x, int y) {
-	return 0x400000+(x+78*y)*0x1000;
+// pos_mapa devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
+int pos_mapa(int flia, int col) {
+	return 0x400000+(col+78*fila)*0x1000;
 }
 
 void mmu_inicializar() {
@@ -81,6 +80,11 @@ int pedir_pagina(){
 
 //IDENTITY MAPPING.
 void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
+	/*
+	tipo: 'G', 'C' o 'M'
+	jugador: 'A' o 'B'
+	*/
+	jugador -= 65; // jugador A: 0, jugador B: 1 
 	page_dir_entry* pd = (page_dir_entry*) pedir_pagina();
 	page_table_entry* pt = (page_table_entry*) pedir_pagina();
 	
@@ -131,25 +135,34 @@ void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	}
 	// copiamos el codigo
 	int* src;
-	if (jugador=='A') {
-		if (tipo=='G') src = (int*) 0x10000;
-		if (tipo=='M') src = (int*) 0x11000;
-		if (tipo=='C') src = (int*) 0x12000;
-	} else {
-		if (tipo=='G') src = (int*) 0x13000;
-		if (tipo=='M') src = (int*) 0x14000;
-		if (tipo=='C') src = (int*) 0x15000;
-	}
-	int* dst;
-	if (jugador=='A') { 
-		dst = (int*) pos_mapa(1, pos);
-	} else {
-		dst = (int*) pos_mapa(76, pos);
-	}
+	if (tipo=='G') src = (int*) 0x10000 + jugador*0x3000;
+	if (tipo=='M') src = (int*) 0x11000 + jugador*0x3000;
+	if (tipo=='C') src = (int*) 0x12000 + jugador*0x3000; //el jugador B esta 0x3000 mas adelante
+	
+	//el mapa tiene 44x78 posiciones
+	int* dst = (int*) pos_mapa(1+jugador*75, pos); // A va a col 1 y B a col 76
+	
 	for (i=0; i<0x400; i++) {
 		dst[i]=src[i];
 	}
-		
+	
+	//mapeamos las paginas:
+	/*  Jug A:         Jug B:
+	    8 6 4   			 3 5 9
+	    7 1 2          2 1 7
+	    9 5 3          4 5 8
+	*/
+	int cr3 = (int) pd;
+	mmu_mapear_pagina(0x8000000, (int) pd, pos_mapa(1+jugador*75, pos));
+	mmu_mapear_pagina(0x8001000, (int) pd, pos_mapa(2+jugador*73, pos));
+	mmu_mapear_pagina(0x8002000, (int) pd, pos_mapa(2+jugador*73, (pos+1) % 44));
+	mmu_mapear_pagina(0x8003000, (int) pd, pos_mapa(2+jugador*73, (pos-1) % 44));
+	mmu_mapear_pagina(0x8004000, (int) pd, pos_mapa(1+jugador*75, (pos+1) % 44));
+	mmu_mapear_pagina(0x8005000, (int) pd, pos_mapa(1+jugador*75, (pos-1) % 44));
+	mmu_mapear_pagina(0x8006000, (int) pd, pos_mapa(jugador*77, pos));
+	mmu_mapear_pagina(0x8007000, (int) pd, pos_mapa(jugador*77, (pos-1) % 44));
+	mmu_mapear_pagina(0x8008000, (int) pd, pos_mapa(jugador*77, (pos+1) % 44));
+	
 /*TODO*/
 }
 
@@ -226,6 +239,9 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 	pt[off].p = 0;
 	tlbflush();
 }
+
+
+
 
 
 
