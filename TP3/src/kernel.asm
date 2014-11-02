@@ -15,6 +15,7 @@ extern pintar_buffer_video
 extern deshabilitar_pic
 extern resetear_pic
 extern habilitar_pic
+extern tss_inicializar
 	
 ;; Saltear seccion de datos
 jmp start

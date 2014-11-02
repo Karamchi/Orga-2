@@ -32,7 +32,9 @@
 #define GDT_DATOS_0		9
 #define GDT_CODIGO_3		10
 #define GDT_DATOS_3		11
-#define GDT_AREA_PANTALLA	12
+#define GDT_PANTALLA	12
+#define GDT_TAREA_INICIAL	13
+#define GDT_IDLE	14
 
 #define GDT_IDX_NULL_DESC        0
 

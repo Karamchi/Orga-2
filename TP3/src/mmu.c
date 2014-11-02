@@ -7,7 +7,7 @@
 
 #include "mmu.h"
 // pos_mapa devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
-int pos_mapa(int flia, int col) {
+int pos_mapa(int fila, int col) {
 	return 0x400000+(col+78*fila)*0x1000;
 }
 
@@ -152,7 +152,6 @@ void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	    7 1 2          2 1 7
 	    9 5 3          4 5 8
 	*/
-	int cr3 = (int) pd;
 	mmu_mapear_pagina(0x8000000, (int) pd, pos_mapa(1+jugador*75, pos));
 	mmu_mapear_pagina(0x8001000, (int) pd, pos_mapa(2+jugador*73, pos));
 	mmu_mapear_pagina(0x8002000, (int) pd, pos_mapa(2+jugador*73, (pos+1) % 44));
