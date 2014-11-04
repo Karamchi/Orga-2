@@ -79,7 +79,7 @@ int pedir_pagina(){
 }
 
 //IDENTITY MAPPING.
-void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
+int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	/*
 	tipo: 'G', 'C' o 'M'
 	jugador: 'A' o 'B'
@@ -148,7 +148,7 @@ void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	
 	//mapeamos las paginas:
 	/*  Jug A:         Jug B:
-	    8 6 4   			 3 5 9
+	    8 6 4   		3 5 9
 	    7 1 2          2 1 7
 	    9 5 3          4 5 8
 	*/
@@ -162,7 +162,7 @@ void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	mmu_mapear_pagina(0x8007000, (int) pd, pos_mapa(jugador*77, (pos-1) % 44));
 	mmu_mapear_pagina(0x8008000, (int) pd, pos_mapa(jugador*77, (pos+1) % 44));
 	
-/*TODO*/
+	return (int)pd;
 }
 
 

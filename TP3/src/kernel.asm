@@ -16,6 +16,8 @@ extern deshabilitar_pic
 extern resetear_pic
 extern habilitar_pic
 extern tss_inicializar
+extern mmu_inicializar
+extern tss_inicializar_idle
 	
 ;; Saltear seccion de datos
 jmp start
@@ -122,9 +124,10 @@ BITS 32
     ; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-       	xchg bx, bx
-       	pushad
+    xchg bx, bx
+    pushad
 	call mmu_inicializar_dir_kernel
+	call mmu_inicializar
 	popad
 	
     ; Cargar directorio de paginas
@@ -143,7 +146,9 @@ BITS 32
 	call tss_inicializar
 
     ; Inicializar tss de la tarea Idle
-
+    
+    call tss_inicializar_idle
+    
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
@@ -160,12 +165,17 @@ BITS 32
     call habilitar_pic
 
     ; Cargar tarea inicial
+    
+    mov ax, 0x0D
+    ltr ax
 
     ; Habilitar interrupciones
 
     sti
 
     ; Saltar a la primera tarea: Idle
+    
+    jmp 0x0E:0
 
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
