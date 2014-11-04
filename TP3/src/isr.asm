@@ -11,6 +11,7 @@ BITS 32
 sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
 chars: db 'wasdijklslsr'
+int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Overflow(OF)    BOUND R.E(BR)   Invalid Opcode  Device NA(NM)   DOUBLE FAULT(DF)CSO             Invalid TSS(TS) Segment Not Pr. Stack S Fault   General Protect Page Fault(PF)  RESERVED        Math Fault(MF)  AlignmentCheck  Machine Check F Point Except    '
 ;; PIC
 extern fin_intr_pic1
 
@@ -34,16 +35,22 @@ _isr%1:
     je Teclado
     cmp eax, 102
     je sys66
-    mov edi, 0xb8000 ; pantalla
-    mov esi, 0x0F4E0F49	; 'IN' al reves (por little endian). Vamos a imprimir esto por pantalla.
-    mov [edi], esi
+    mov edi, int_msg
+    mov esi, 16
+    mul esi
+    add edi, eax
+    imprimir_texto_mp edi, 16, 0x07, 0, 0
+    xchg bx, bx
+    ;mov edi, 0xb8000 ; pantalla
+    ;mov esi, 0x0F4E0F49	; 'IN' al reves (por little endian). Vamos a imprimir esto por pantalla.
+    ;mov [edi], esi
     
-    mov esi, 0x043A0F54	; 'T:'
-    mov [edi+4], esi
+    ;mov esi, 0x043A0F54	; 'T:'
+    ;mov [edi+4], esi
     
-    add eax, 65				; eax era el numero de interrupcion, lo pasamos a letra para imprimirlo en un solo caracter (esta en al)
-    mov [edi+8], al
-    mov byte[edi+9], 0x0F	; 0F es el color blanco
+    ;add eax, 65				; eax era el numero de interrupcion, lo pasamos a letra para imprimirlo en un solo caracter (esta en al)
+    ;mov [edi+8], al
+    ;mov byte[edi+9], 0x0F	; 0F es el color blanco
     popad
     
     iret
