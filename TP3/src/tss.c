@@ -6,25 +6,30 @@
 */
 
 #include "tss.h"
+#include "i386.h"
 
+tss tss_inicial;
+tss tss_idle;
 
 tss tss_zombisA[CANT_ZOMBIS];
 tss tss_zombisB[CANT_ZOMBIS];
 
-void tss_completar_libre(tss t, char tipo, char jugador, int pos, bool interr){
-		int cr3 = mmu_inicializar_dir_zombie(tipo, jugador, pos);
+void tss_completar_libre(tss t, char tipo, char jugador, int pos/*, bool interr*/){
+		breakpoint();
+		int cr3 = mmu_inicializar_dir_zombi(tipo, jugador, pos);
 		t.cr3 = cr3;
 		jugador -= 65; // jugador A: 0, jugador B: 1 
 		t.eip = pos_mapa(1+jugador*75, pos);
-		t.eflags=0x02+interr*(0x200); //VER Q ONDA DSD EL ASM COMO VER SI ESTÁ HABILITADO LAS INTERRUP
-		t.esp = src; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
-		t.ebp = src; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t.eflags=0x02/*+interr*(0x200)*/; //VER Q ONDA DSD EL ASM COMO VER SI ESTÁ HABILITADO LAS INTERRUP
+		t.esp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t.ebp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
 }
 
 void tss_inicializar() {
-	//page_dir_entry* pdep =(page_dir_entry*)0x27000;
-	tss* tss_inicial = (tss*)0x00DEFECA;
-	tss_inicial[0] = (tss) {
+	gdt[GDT_TAREA_INICIAL].base_0_15 = (int)&tss_inicial & 0xFFFF;
+	gdt[GDT_TAREA_INICIAL].base_23_16 = ((int)&tss_inicial >> 16) & 0xFF;
+	gdt[GDT_TAREA_INICIAL].base_31_24 = (int)&tss_inicial >> 24;
+	/*tss_inicial = (tss) {
 		(unsigned short)  0x00,	//ptl;
 		(unsigned short)  0x00,	//unused0;
 		(unsigned int)    0x00,	//esp0;
@@ -63,12 +68,14 @@ void tss_inicializar() {
 		(unsigned short)  0x00,	//unused10;
 		(unsigned short)  0x00,	//dtrap;
 		(unsigned short)  0x00,	//iomap;
-	};
+	};*/
 }
 
 void tss_inicializar_idle() {
-	tss* tss_idle = (tss*)0x0000CACA;
-	tss_idle[0] = (tss) {
+	gdt[GDT_IDLE].base_0_15 = (int)&tss_idle & 0xFFFF;
+	gdt[GDT_IDLE].base_23_16 = ((int)&tss_idle >> 16) & 0xFF;
+	gdt[GDT_IDLE].base_31_24 = (int)&tss_idle >> 24;
+	tss_idle = (tss) {
 		(unsigned short)  0x00,	//ptl;
 		(unsigned short)  0x00,	//unused0;
 		(unsigned int)    0x00,	//esp0;
@@ -82,7 +89,7 @@ void tss_inicializar_idle() {
 		(unsigned short)  0x00,	//unused3;
 		(unsigned int)    0x27000,	//cr3;
 		(unsigned int)    0x00016000,	//eip; MANZANA!
-		(unsigned int)    0x00000002,	//eflags;
+		(unsigned int)    0x00000202,	//eflags;
 		(unsigned int)    0x00,	//eax;
 		(unsigned int)    0x00,	//ecx;
 		(unsigned int)    0x00,	//edx;
@@ -93,7 +100,7 @@ void tss_inicializar_idle() {
 		(unsigned int)    0x00,	//edi;
 		(unsigned short)  0x0048,	//es;
 		(unsigned short)  0x00,	//unused4;
-		(unsigned short)  0x00,	//cs;
+		(unsigned short)  0x40,	//cs;
 		(unsigned short)  0x00,	//unused5;
 		(unsigned short)  0x0048,	//ss;
 		(unsigned short)  0x00,	//unused6;
@@ -108,4 +115,8 @@ void tss_inicializar_idle() {
 		(unsigned short)  0x00,	//dtrap;
 		(unsigned short)  0x00,	//iomap;
 	};
+}
+
+void cargar_tarea_inicial(){
+	ltr(0x68);
 }

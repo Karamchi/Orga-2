@@ -42,12 +42,12 @@ typedef struct str_page_table_entry {
     unsigned int  	base:20;
 } __attribute__((__packed__, aligned (4))) page_table_entry;
 
-// int pos_mapa(int fila, int col); // devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
+int pos_mapa(int fila, int col); // devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
 
 int pedir_pagina();
 void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
-void mmu_inicializar_dir_zombi(char tipo, char jugador, int pos); 
+int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos); 
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica); 
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
 unsigned int contador_pags;

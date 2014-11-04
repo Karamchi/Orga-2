@@ -18,7 +18,8 @@ extern habilitar_pic
 extern tss_inicializar
 extern mmu_inicializar
 extern tss_inicializar_idle
-	
+extern cargar_tarea_inicial
+
 ;; Saltear seccion de datos
 jmp start
 
@@ -124,7 +125,6 @@ BITS 32
     ; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-    xchg bx, bx
     pushad
 	call mmu_inicializar_dir_kernel
 	call mmu_inicializar
@@ -142,12 +142,15 @@ BITS 32
 	 mov cr0, eax
 
     ; Inicializar tss
-
+	xchg bx, bx
+	pushad
 	call tss_inicializar
-
+	popad
+	
     ; Inicializar tss de la tarea Idle
-    
+    pushad
     call tss_inicializar_idle
+    popad
     
     ; Inicializar el scheduler
 
@@ -160,14 +163,16 @@ BITS 32
    	;int 0x06
    	
     ; Configurar controlador de interrupciones
-    
+    pushad
     call resetear_pic
     call habilitar_pic
-
+	popad
+	
     ; Cargar tarea inicial
-    
-    mov ax, 0x0D
-    ltr ax
+    xchg bx, bx
+    call cargar_tarea_inicial
+    ;mov ax, 0x68
+    ;ltr ax
 
     ; Habilitar interrupciones
 

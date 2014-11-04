@@ -126,7 +126,7 @@ gdt_entry gdt[GDT_COUNT] = {
 
     [GDT_IDLE] = (gdt_entry) {
         (unsigned short)    0x0067,         /* limit[0:15]  */
-        (unsigned short)    0xCACA,           /* base[0:15]   */
+        (unsigned short)    0xCACA,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
         (unsigned char)     0x09,           /* type         */
         (unsigned char)     0x01,           /* s            */
