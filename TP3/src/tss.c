@@ -116,7 +116,3 @@ void tss_inicializar_idle() {
 		(unsigned short)  0x00,	//iomap;
 	};
 }
-
-void cargar_tarea_inicial(){
-	ltr(0x68);
-}

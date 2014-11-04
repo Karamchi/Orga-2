@@ -113,7 +113,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0xFECA,           /* base[0:15]   */  //¿Acá iba fruta? ¿0x00DEFECA?
         (unsigned char)     0xDE,           /* base[23:16]  */
         (unsigned char)     0x09,           /* type         */ //10B1=1001
-        (unsigned char)     0x01,           /* s            */
+        (unsigned char)     0x00,           /* s            */
         (unsigned char)     0x00,           /* dpl          */ //?
         (unsigned char)     0x01,           /* p            */
         (unsigned char)     0x00,           /* limit[16:19] */
@@ -129,7 +129,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned short)    0xCACA,         /* base[0:15]   */
         (unsigned char)     0x00,           /* base[23:16]  */
         (unsigned char)     0x09,           /* type         */
-        (unsigned char)     0x01,           /* s            */
+        (unsigned char)     0x00,           /* s            */
         (unsigned char)     0x00,           /* dpl          */
         (unsigned char)     0x01,           /* p            */
         (unsigned char)     0x00,           /* limit[16:19] */

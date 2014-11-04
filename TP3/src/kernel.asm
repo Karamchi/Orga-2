@@ -18,7 +18,6 @@ extern habilitar_pic
 extern tss_inicializar
 extern mmu_inicializar
 extern tss_inicializar_idle
-extern cargar_tarea_inicial
 
 ;; Saltear seccion de datos
 jmp start
@@ -60,6 +59,7 @@ start:
 	call habilitar_A20    
 
     ; Cargar la GDT
+    xchg bx, bx
 	lgdt [GDT_DESC]
 
     ; Setear el bit PE del registro CR0
@@ -125,62 +125,49 @@ BITS 32
     ; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-    pushad
 	call mmu_inicializar_dir_kernel
 	call mmu_inicializar
-	popad
 	
     ; Cargar directorio de paginas
-
 	mov eax, 0x27000; page_directory HAY Q VER ESTO!!
 	mov cr3, eax
 		
     ; Habilitar paginacion
-    
 	 mov eax, cr0
 	 or eax, 0x80000000 ;habilitamos paginacion
 	 mov cr0, eax
 
     ; Inicializar tss
 	xchg bx, bx
-	pushad
 	call tss_inicializar
-	popad
 	
     ; Inicializar tss de la tarea Idle
-    pushad
     call tss_inicializar_idle
-    popad
     
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-
 	call idt_inicializar
 	
     ; Cargar IDT
-    	lidt [IDT_DESC]
-   	;int 0x06
+    lidt [IDT_DESC]
    	
     ; Configurar controlador de interrupciones
-    pushad
     call resetear_pic
     call habilitar_pic
-	popad
 	
     ; Cargar tarea inicial
     xchg bx, bx
-    call cargar_tarea_inicial
-    ;mov ax, 0x68
-    ;ltr ax
+    mov ax, 0x68
+    ltr ax
 
     ; Habilitar interrupciones
-
     sti
+    	int 0x06
 
     ; Saltar a la primera tarea: Idle
     
-    jmp 0x0E:0
+    jmp 0x70:0
 
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
