@@ -13,18 +13,18 @@ void game_lanzar_zombi(unsigned int jugador) {
 void game_move_current_zombi(direccion dir) {
 	switch (dir) {
 		case (IZQ):
-			if (anteriorJug == 0){		//Jugador actual A
-				tareasA[anteriorA].pos_i = (tareasA[anteriorA].pos_i - 2)%44 + 1; 	//ZombieA actual
+			if (anteriorjug == 0){		//Jugador actual A
+				tareasA[(int)anteriorA].pos_i = (tareasA[(int)anteriorA].pos_i - 2)%44 + 1; 	//ZombieA actual
 			} else {			//Jugador actual B
-				tareasB[anteriorB].pos_i = (tareasB[anteriorB].pos_i)%44 + 1;
+				tareasB[(int)anteriorB].pos_i = (tareasB[(int)anteriorB].pos_i)%44 + 1;
 			} 
 			break;
 		
 		case (DER):
-			if (anteriorJug == 0){		//Jugador actual A
-				tareasA[anteriorA].pos_i = (tareasB[anteriorB].pos_i)%44 + 1; 	//ZombieA actual
+			if (anteriorjug == 0){		//Jugador actual A
+				tareasA[(int)anteriorA].pos_i = (tareasB[(int)anteriorB].pos_i)%44 + 1; 	//ZombieA actual
 			} else {			//Jugador actual B
-				tareasB[anteriorB].pos_i = (tareasA[anteriorA].pos_i - 2)%44 + 1;
+				tareasB[(int)anteriorB].pos_i = (tareasA[(int)anteriorA].pos_i - 2)%44 + 1;
 			} 
 			break;
 		

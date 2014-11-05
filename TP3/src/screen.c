@@ -6,6 +6,7 @@
 */
 
 #include "screen.h"
+#include "sched.h"
 
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr) {
     ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
