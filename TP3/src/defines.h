@@ -26,7 +26,7 @@
 
 /* Indices en la gdt */
 /* -------------------------------------------------------------------------- */
-#define GDT_COUNT 30
+#define GDT_COUNT 31
 
 #define GDT_CODIGO_0		8
 #define GDT_DATOS_0		9
@@ -35,6 +35,22 @@
 #define GDT_PANTALLA	12
 #define GDT_TAREA_INICIAL	13
 #define GDT_IDLE	14
+#define GDT_ZOMBI_A8	15
+#define GDT_ZOMBI_A7	16
+#define GDT_ZOMBI_A6	17
+#define GDT_ZOMBI_A5	18
+#define GDT_ZOMBI_A4	19
+#define GDT_ZOMBI_A3	20
+#define GDT_ZOMBI_A2	21
+#define GDT_ZOMBI_A1	22
+#define GDT_ZOMBI_B8	23
+#define GDT_ZOMBI_B7	24
+#define GDT_ZOMBI_B6	25
+#define GDT_ZOMBI_B5	26
+#define GDT_ZOMBI_B4	27
+#define GDT_ZOMBI_B3	28
+#define GDT_ZOMBI_B2	29
+#define GDT_ZOMBI_B1	30
 
 #define GDT_IDX_NULL_DESC        0
 
