@@ -20,6 +20,11 @@ typedef struct info_zombi_struct {
 	
 } __attribute__((__packed__)) info_zombi; 
 
+info_zombi tareasA[CANT_ZOMBIS];
+info_zombi tareasB[CANT_ZOMBIS];
+int anterior;
+
+void sched_inicializar();
 unsigned short sched_proximo_indice();
 
 

@@ -239,18 +239,3 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 	tlbflush();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

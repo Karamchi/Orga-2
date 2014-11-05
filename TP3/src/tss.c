@@ -19,7 +19,7 @@ void tss_completar_libre(tss t, char tipo, char jugador, int pos){
 		t.cr3 = cr3;
 		jugador -= 65; // jugador A: 0, jugador B: 1 
 		t.eip = pos_mapa(1+jugador*75, pos);
-		t.eflags=0x202
+		t.eflags=0x202;
 		t.esp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
 		t.ebp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
 }
@@ -31,15 +31,15 @@ void tss_inicializar() {
 
 	int i;	
 	for (i=0;i<CANT_ZOMBIS;i++) {
-		gdt[GDT_ZOMBIE_A8+i].base_0_15 = (int)&(tss_zombisA[i]) & 0xFFFF;
-		gdt[GDT_ZOMBIE_A8+i].base_23_16 = ((int)&(tss_zombisA[i]) >> 16) & 0xFF;
-		gdt[GDT_ZOMBIE_A8+i].base_31_24 = (int)&(tss_zombisA[i]) >> 24;
+		gdt[GDT_ZOMBI_A8+i].base_0_15 = (int)&(tss_zombisA[i]) & 0xFFFF;
+		gdt[GDT_ZOMBI_A8+i].base_23_16 = ((int)&(tss_zombisA[i]) >> 16) & 0xFF;
+		gdt[GDT_ZOMBI_A8+i].base_31_24 = (int)&(tss_zombisA[i]) >> 24;
 	}
 	
 	for (i=0;i<CANT_ZOMBIS;i++) {
-		gdt[GDT_ZOMBIE_B8+i].base_0_15 = (int)&(tss_zombisB[i]) & 0xFFFF;
-		gdt[GDT_ZOMBIE_B8+i].base_23_16 = ((int)&(tss_zombisB[i]) >> 16) & 0xFF;
-		gdt[GDT_ZOMBIE_B8+i].base_31_24 = (int)&(tss_zombisB[i]) >> 24;
+		gdt[GDT_ZOMBI_B8+i].base_0_15 = (int)&(tss_zombisB[i]) & 0xFFFF;
+		gdt[GDT_ZOMBI_B8+i].base_23_16 = ((int)&(tss_zombisB[i]) >> 16) & 0xFF;
+		gdt[GDT_ZOMBI_B8+i].base_31_24 = (int)&(tss_zombisB[i]) >> 24;
 	}
 }
 
