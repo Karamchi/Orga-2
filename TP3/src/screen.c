@@ -67,8 +67,24 @@ void pintar_buffer_video() {
 		}
 	}
 	/*
-		aca faltaría escribir la info de los relojes, el puntaje, cant de zombies, etc
+		aca faltaría escribir la info de los relojes
 	*/
+}
+
+void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char color) {
+	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+	unsigned char d=a/10;
+	unsigned char u=a%10;	
+		p[pos_i][pos_i] = (ca){d+'0',color};	
+		p[pos_i][pos_j] = (ca){u+'0',color};
+}
+
+
+void pintar_buffer_video_posta(info_jug jug1, info_jug jug2) {
+	printint(jug1.pts,47,36,0x40);
+	printint(jug2.pts,47,41,0x40);
+	printint(jug1.zqq,47,36,0x40);
+	printint(jug2.zqq,47,41,0x40);
 }
 
 
