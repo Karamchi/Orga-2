@@ -22,7 +22,9 @@ typedef struct info_zombi_struct {
 
 info_zombi tareasA[CANT_ZOMBIS];
 info_zombi tareasB[CANT_ZOMBIS];
-int anterior;
+char anteriorA;
+char anteriorB;
+char anteriorjug;
 
 void sched_inicializar();
 unsigned short sched_proximo_indice();
