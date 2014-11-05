@@ -15,6 +15,9 @@ int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Ove
 ;; PIC
 extern fin_intr_pic1
 
+;; GAME
+extern game_move_current_zombi
+
 ;; Sched
 extern sched_proximo_indice
 
@@ -28,6 +31,7 @@ global _isr%1
 _isr%1:
     cli
     pushad
+    mov ecx, %1		; guardo para el sys66
     mov eax, %1		; numero de interrupcion
     cmp eax, 32
     je Reloj
@@ -171,10 +175,13 @@ Teclado:
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
-sys66:
+sys66:	;ecx numero de la interrupcion
 	call fin_intr_pic1
 	popad
-	mov eax, 0x42
+	push ecx
+	call game_move_current_zombi
+	pop ecx
+	mov eax, 0x42	;Esto es del ejercicio de Interrupciones
 	sti
 	iret
 	
