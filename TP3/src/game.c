@@ -7,8 +7,31 @@
 #include "game.h"
 
 void game_jugador_mover(unsigned int jugador, unsigned int value) {
+	if (jugador==1) {
+		print(" ",0,jugA.pos,0x40);
+ 		jugA.pos=(jugA.pos+value-2)%44+1;
+		print((char*)&(jugA.tzl),0,jugA.pos,0x40);
+	} else {
+		print(" ",79,jugB.pos,0x10);
+ 		jugB.pos=(jugB.pos+value-2)%44+1;
+		print((char*)&(jugB.tzl),79,jugB.pos,0x10);
+	}
 }
 void game_lanzar_zombi(unsigned int jugador) {
+	if (jugador==1) {
+		if (jugA.zqq>0 && jugA.zep<8) {
+			jugA.zqq--;
+			juga.zep++;
+			//(lanzar zombi)
+			//(imprimir zombie)
+		}
+	} else {
+		if (jugB.zqq>0 && jugB.zep<8) {
+			jugB.zqq--;
+			//(lanzar zombi)
+ 			//(imprimir zombie)
+		}
+	}
 }
 void game_move_current_zombi(direccion dir) {
 	
@@ -84,4 +107,15 @@ void game_move_current_zombi(direccion dir) {
 	pintar_buffer_video_posta(jugA, jugB);
 	//Remapear Paginas 
 }
-void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){}
+void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){
+
+	if (jugador==1) {
+		unsigned int nuevoval=(jugA.tzl+value-2)%3;
+		jugA.tzl=tipos[nuevoval];
+		print((char*)&(jugA.tzl),0,jugA.pos,0x40);
+	} else {
+		unsigned int nuevoval=(jugB.tzl+value-2)%3;
+		jugB.tzl=tipos[nuevoval];
+		print((char*)&(jugB.tzl),79,jugA.pos,0x10);
+	}
+}
