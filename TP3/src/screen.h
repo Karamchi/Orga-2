@@ -14,7 +14,7 @@
 
 #include "colors.h"
 #include "defines.h"
-/* Estructura de para acceder a memoria de video */
+/* Estructura de para acceder a memoria de video */ 
 typedef struct ca_s {
     unsigned char c;
     unsigned char a;

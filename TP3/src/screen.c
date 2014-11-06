@@ -68,7 +68,7 @@ void pintar_buffer_video() {
 		}
 	}
 	/*
-		aca faltaría escribir la info de los relojes
+		aca faltaría escribir la info de los relojes 
 	*/
 }
 

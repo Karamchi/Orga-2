@@ -82,6 +82,6 @@ void game_move_current_zombi(direccion dir) {
 			break;
 	}
 	pintar_buffer_video_posta(jugA, jugB);
-	//Remapear Paginas
+	//Remapear Paginas 
 }
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){}
