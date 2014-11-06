@@ -10,7 +10,7 @@ extern IDT_DESC
 extern GDT_DESC
 extern idt_inicializar
 extern mmu_inicializar_dir_kernel
-;extern page_directory
+extern sched_inicializar
 extern pintar_buffer_video
 extern deshabilitar_pic
 extern resetear_pic
@@ -125,8 +125,8 @@ BITS 32
     ; Inicializar el manejador de memoria
  
     ; Inicializar el directorio de paginas
-	call mmu_inicializar_dir_kernel
 	call mmu_inicializar
+	call mmu_inicializar_dir_kernel
 	
     ; Cargar directorio de paginas
 	mov eax, 0x27000; page_directory HAY Q VER ESTO!!
@@ -145,6 +145,7 @@ BITS 32
     call tss_inicializar_idle
     
     ; Inicializar el scheduler
+    call sched_inicializar
 
     ; Inicializar la IDT
 	call idt_inicializar
@@ -163,7 +164,6 @@ BITS 32
 
     ; Habilitar interrupciones
     sti
-    	int 0x06
 
     ; Saltar a la primera tarea: Idle
     
@@ -175,7 +175,7 @@ BITS 32
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
     xchg bx,bx
-    int 0x66
+    ;int 0x66
     jmp $
     jmp $
 
