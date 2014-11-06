@@ -12,6 +12,9 @@ sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
 chars: db 'wasdijklslsr'
 int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Overflow(OF)    BOUND R.E(BR)   Invalid Opcode  Device NA(NM)   DOUBLE FAULT(DF)CSO             Invalid TSS(TS) Segment Not Pr. Stack S Fault   General Protect Page Fault(PF)  RESERVED        Math Fault(MF)  AlignmentCheck  Machine Check F Point Except    '
+offset: dd 0
+selector: dw 14
+
 ;; PIC
 extern fin_intr_pic1
 
@@ -32,7 +35,7 @@ extern sched_proximo_indice
 global _isr%1
 
 _isr%1:
-    cli
+
     pushad
     mov ecx, %1		; guardo para el sys66
     mov eax, %1		; numero de interrupcion
@@ -103,9 +106,17 @@ ISR 102
 Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
+	call sched_proximo_indice
+	
+	cmp ax, [selector]
+	je .end
+		mov [selector], ax
+		jmp far [offset]
+		jmp .end
+		
+	.end:
 	popad
-	sti
-	iret
+iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
@@ -141,13 +152,13 @@ Teclado:
     call game_jugador_mover
 	jmp .fin
     .imprimirA:
-    push 0xFFFFFFFF
+    push 3
     push 1
     call game_cambiar_tipo_zombi
 	add ebx, 1
 	jmp .fin
     .imprimirS:
-    push 0xFFFFFFFF
+    push 3
     push 1
     call game_jugador_mover
 	add ebx, 2
@@ -165,13 +176,13 @@ Teclado:
 	add ebx, 4
 	jmp .fin
     .imprimirJ:
-    push 0xFFFFFFFF
+    push 3
     push 2
 	add ebx, 5
     call game_cambiar_tipo_zombi
 	jmp .fin
     .imprimirK:
-    push 0xFFFFFFFF
+    push 3
     push 2
     call game_jugador_mover
 	add ebx, 6
@@ -199,7 +210,6 @@ Teclado:
 	imprimir_texto_mp ebx, 2, 0x0f, 0, 78	
     .finposta:
 	popad
-	sti
 	iret
 
 ;;
@@ -212,7 +222,6 @@ sys66:	;ecx numero de la interrupcion
 	call game_move_current_zombi
 	pop ecx
 	mov eax, 0x42	;Esto es del ejercicio de Interrupciones
-	sti
 	iret
 	
 %define IZQ 0xAAA
