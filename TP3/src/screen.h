@@ -26,4 +26,10 @@ void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, un
 
 void pintar_buffer_video();
 
+void printZombi(info_zombi z);
+
+void pintar_buffer_video_posta(info_jug jug1, info_jug jug2);
+
+void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char color);
+
 #endif  /* !__SCREEN_H__ */

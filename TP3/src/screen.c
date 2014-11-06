@@ -88,4 +88,23 @@ void pintar_buffer_video_posta(info_jug jug1, info_jug jug2) {
 	printint(jug2.zqq,47,41,0x40);
 }
 
-
+void printZombi(info_zombi z){
+	if (z.vivo == 0){
+		print("X", z.pos_j, z.pos_i, C_FG_RED+C_BG_GREEN)
+	} else {
+		switch(z.tipo){
+			case ('G'):
+				if (z.jugador == 0){print("G", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_RED)}
+				else {print("G", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_BLUE)}
+				break;
+			case ('C'):
+				if (z.jugador == 0){print("C", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_RED)}
+				else {print("C", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_BLUE)}				
+				break;
+			case ('M'):
+				if (z.jugador == 0){print("M", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_RED)}
+				else {print("M", z.pos_j, z.pos_i, C_FG_WHITE+C_BG_BLUE)}
+				break;
+		}
+	}	
+}
