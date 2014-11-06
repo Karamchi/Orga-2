@@ -8,6 +8,18 @@
 #include "sched.h"
 
 void sched_inicializar(){ 
+	jugA.pos=25;
+	jugA.pts=0;
+	jugB.zep=8;
+	jugA.zqq=20;
+	jugA.tzl='M';
+	
+	jugB.pos=25;
+	jugB.pts=0;
+	jugB.zqq=20;
+	jugB.zep=8;
+	jugB.tzl='M';
+	
 	anteriorA=0;
 	anteriorB=0;
 	anteriorjug=0;
