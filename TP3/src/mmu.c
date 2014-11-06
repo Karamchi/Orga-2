@@ -84,7 +84,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	tipo: 'G', 'C' o 'M'
 	jugador: 'A' o 'B'
 	*/
-	jugador -= 65; // jugador A: 0, jugador B: 1 
+	//jugador -= 65; // jugador A: 0, jugador B: 1 
 	page_dir_entry* pd = (page_dir_entry*) pedir_pagina();
 	page_table_entry* pt = (page_table_entry*) pedir_pagina();
 	
@@ -152,15 +152,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	    7 1 2          2 1 7
 	    9 5 3          4 5 8
 	*/
-	mmu_mapear_pagina(0x8000000, (int) pd, pos_mapa(1+jugador*75, pos));
-	mmu_mapear_pagina(0x8001000, (int) pd, pos_mapa(2+jugador*73, pos));
-	mmu_mapear_pagina(0x8002000, (int) pd, pos_mapa(2+jugador*73, (pos+1) % 44));
-	mmu_mapear_pagina(0x8003000, (int) pd, pos_mapa(2+jugador*73, (pos-1) % 44));
-	mmu_mapear_pagina(0x8004000, (int) pd, pos_mapa(1+jugador*75, (pos+1) % 44));
-	mmu_mapear_pagina(0x8005000, (int) pd, pos_mapa(1+jugador*75, (pos-1) % 44));
-	mmu_mapear_pagina(0x8006000, (int) pd, pos_mapa(jugador*77, pos));
-	mmu_mapear_pagina(0x8007000, (int) pd, pos_mapa(jugador*77, (pos-1) % 44));
-	mmu_mapear_pagina(0x8008000, (int) pd, pos_mapa(jugador*77, (pos+1) % 44));
+	mmu_mapear_paginas_zombi((unsigned int) pd, jugador, 1+jugador*75, pos);
 	
 	return (int)pd;
 }
@@ -238,4 +230,32 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 	pt[off].p = 0;
 	tlbflush();
 }
+
+void mmu_mapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x, unsigned char y) {
+	// ESTO NO ESTA TERMINADO
+	mmu_mapear_pagina(0x8000000, cr3, pos_mapa(x, y));
+	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(x-2*jugador+1, y));
+	mmu_mapear_pagina(0x8002000, cr3, pos_mapa(x-2*jugador+1, (y+1) % 44));
+	mmu_mapear_pagina(0x8003000, cr3, pos_mapa(x-2*jugador+1, (y-1) % 44));
+	mmu_mapear_pagina(0x8004000, cr3, pos_mapa(x, (y+1) % 44));
+	mmu_mapear_pagina(0x8005000, cr3, pos_mapa(x, (y-1) % 44));
+	mmu_mapear_pagina(0x8006000, cr3, pos_mapa(x+2*jugador+1, y));
+	mmu_mapear_pagina(0x8007000, cr3, pos_mapa(x+2*jugador+1, (y-1) % 44));
+	mmu_mapear_pagina(0x8008000, cr3, pos_mapa(x+2*jugador+1, (y+1) % 44));
+	
+}
+
+void mmu_unmapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x, unsigned char y) {
+	mmu_unmapear_pagina(0x8000000, cr3);
+	mmu_unmapear_pagina(0x8001000, cr3);
+	mmu_unmapear_pagina(0x8002000, cr3);
+	mmu_unmapear_pagina(0x8003000, cr3);
+	mmu_unmapear_pagina(0x8004000, cr3);
+	mmu_unmapear_pagina(0x8005000, cr3);
+	mmu_unmapear_pagina(0x8006000, cr3);
+	mmu_unmapear_pagina(0x8007000, cr3);
+	mmu_unmapear_pagina(0x8008000, cr3);
+	
+}
+
 
