@@ -147,59 +147,59 @@ Teclado:
 	je .imprimirSL
 	jmp .finposta
     .imprimirW:
-    push 1
-    push 1
+    push 3
+    push 0
     call game_jugador_mover
 	jmp .fin
     .imprimirA:
-    push 3
     push 1
+    push 0
     call game_cambiar_tipo_zombi
 	add ebx, 1
 	jmp .fin
     .imprimirS:
-    push 3
     push 1
+    push 0
     call game_jugador_mover
 	add ebx, 2
 	jmp .fin
     .imprimirD:
-    push 1
-    push 1
+    push 3
+    push 0
     call game_cambiar_tipo_zombi
 	add ebx, 3
 	jmp .fin
     .imprimirI:
+    push 3
     push 1
-    push 2
     call game_jugador_mover
 	add ebx, 4
 	jmp .fin
     .imprimirJ:
-    push 3
-    push 2
+    push 1
+    push 1
 	add ebx, 5
     call game_cambiar_tipo_zombi
 	jmp .fin
     .imprimirK:
-    push 3
-    push 2
+    push 1
+    push 1
     call game_jugador_mover
 	add ebx, 6
 	jmp .fin
     .imprimirL:
+    push 3
     push 1
-    push 2
     call game_cambiar_tipo_zombi
 	add ebx, 7
 	jmp .fin
     .imprimirSR:
-    push 2
+    push 1
     call game_lanzar_zombi
 	add ebx, 8
 	jmp .fin2
     .imprimirSL:
-    push 1
+    push 0
     call game_lanzar_zombi
 	add ebx, 10
     
