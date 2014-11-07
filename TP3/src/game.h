@@ -23,4 +23,6 @@ void game_move_current_zombi(direccion dir);
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value);
 
 
+
+
 #endif  /* !__GAME_H__ */
