@@ -140,7 +140,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	if (tipo=='C') src = (int*) 0x12000 + jugador*0x3000; //el jugador B esta 0x3000 mas adelante
 	
 	//el mapa tiene 44x78 posiciones
-	int* dst = (int*) pos_mapa(1+jugador*75, pos); // A va a col 1 y B a col 76
+	int* dst = (int*) pos_mapa(pos,1+jugador*77); // A va a col 1 y B a col 76
 	
 	for (i=0; i<0x400; i++) {
 		dst[i]=src[i];

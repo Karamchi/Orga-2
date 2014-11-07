@@ -98,13 +98,13 @@ ISR 102
 Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
-	call sched_proximo_indice
+	;call sched_proximo_indice
 	
-	cmp ax, [selector]
-	je .end
-		mov [selector], ax
-		jmp far [offset]
-		jmp .end
+	;cmp ax, [selector]
+	;je .end
+	;	mov [selector], ax
+	;	jmp far [offset]
+	;	jmp .end
 		
 	.end:
 	popad
@@ -133,9 +133,9 @@ Teclado:
 	je .imprimirK
 	cmp al, 0x26
 	je .imprimirL
-	cmp al, 0x2A
-	je .imprimirSR
 	cmp al, 0x36
+	je .imprimirSR
+	cmp al, 0x2A
 	je .imprimirSL
 	jmp .finposta
     .imprimirW:
@@ -194,6 +194,7 @@ Teclado:
     push 0
     call game_lanzar_zombi
 	add ebx, 10
+	jmp .fin2
     
     .fin:
     pop eax

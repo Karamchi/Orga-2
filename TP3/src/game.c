@@ -64,7 +64,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 			}
 			printZombi(z);
 		}
-	}
+	} pintar_buffer_video_posta(jugA, jugB);
 }
 void game_move_current_zombi(direccion dir) {
 	unsigned int cr3 = rcr3() ;	
@@ -167,10 +167,12 @@ void game_chau_zombi() {
 		tareasA[(int)anteriorA].vivo=0;
 		jugB.pts++;
 		jugA.zep--;
+		printZombi(tareasA[(int)anteriorA]);
 	} else {
 		tareasB[(int)anteriorB].vivo=0;
 		jugA.pts++;
 		jugB.zep--;
+		printZombi(tareasA[(int)anteriorA]);
 	}
-	//y faltaria imprimir cadáver
+	pintar_buffer_video_posta(jugA, jugB);
 }

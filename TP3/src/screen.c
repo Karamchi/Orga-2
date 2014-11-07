@@ -69,8 +69,10 @@ void pintar_buffer_video() {
 	}
 	p[47][37]=(ca){'0',0x4f};//si dejamos esta funcion como "Inicializacion", esto puede ir acá
 	p[47][42]=(ca){'0',0x1f};
-	p[47][31]=(ca){'8',0x4f};
-	p[47][48]=(ca){'8',0x1f};
+	p[47][31]=(ca){'2',0x4f};
+	p[47][32]=(ca){'0',0x4f};
+	p[47][47]=(ca){'2',0x1f};
+	p[47][48]=(ca){'0',0x1f};
 	p[25][0]=(ca){'M',0x4f};
 	p[25][79]=(ca){'M',0x1f};
 
@@ -84,16 +86,16 @@ void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char col
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	unsigned char d=a/10;
 	unsigned char u=a%10;	
-		p[pos_i][pos_i] = (ca){d+'0',color};	
-		p[pos_i][pos_j] = (ca){u+'0',color};
+		p[pos_i][pos_j] = (ca){d+'0',color};	
+		p[pos_i][pos_j+1] = (ca){u+'0',color};
 }
 
 
 void pintar_buffer_video_posta(info_jug jug1, info_jug jug2) {
-	printint(jug1.pts,47,36,0x40);
-	printint(jug2.pts,47,41,0x10);
-	printint(jug1.zqq,47,36,0x40);
-	printint(jug2.zqq,47,41,0x10);
+	printint(jug1.zqq,47,31,0x4f);
+	printint(jug2.zqq,47,47,0x1f);
+	printint(jug1.pts,47,36,0x4f);
+	printint(jug2.pts,47,41,0x1f);
 }
 
 void printZombi(info_zombi z){
