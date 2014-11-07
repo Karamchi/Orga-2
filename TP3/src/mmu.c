@@ -140,7 +140,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	if (tipo=='C') src = (int*) 0x12000 + jugador*0x3000; //el jugador B esta 0x3000 mas adelante
 	
 	//el mapa tiene 44x78 posiciones
-	int* dst = (int*) pos_mapa(pos,1+jugador*77); // A va a col 1 y B a col 76
+	int* dst = (int*) pos_mapa(pos-1,jugador*77); // A va a col 1 y B a col 76
 	
 	for (i=0; i<0x400; i++) {
 		dst[i]=src[i];
@@ -156,11 +156,6 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	
 	return (int)pd;
 }
-
-
-
-
-
 
 //pre: asumimos que virtual y fisica terminan en 0s (apuntan a una pagina)
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica){
@@ -232,16 +227,17 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 }
 
 void mmu_mapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x, unsigned char y) {
+	y--;x--;
 	// ESTO NO ESTA TERMINADO
-	mmu_mapear_pagina(0x8000000, cr3, pos_mapa(x, y));
-	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(x-2*jugador+1, y));
-	mmu_mapear_pagina(0x8002000, cr3, pos_mapa(x-2*jugador+1, (y+1) % 44));
-	mmu_mapear_pagina(0x8003000, cr3, pos_mapa(x-2*jugador+1, (y-1) % 44));
-	mmu_mapear_pagina(0x8004000, cr3, pos_mapa(x, (y+1) % 44));
-	mmu_mapear_pagina(0x8005000, cr3, pos_mapa(x, (y-1) % 44));
-	mmu_mapear_pagina(0x8006000, cr3, pos_mapa(x+2*jugador+1, y));
-	mmu_mapear_pagina(0x8007000, cr3, pos_mapa(x+2*jugador+1, (y-1) % 44));
-	mmu_mapear_pagina(0x8008000, cr3, pos_mapa(x+2*jugador+1, (y+1) % 44));
+	mmu_mapear_pagina(0x8000000, cr3, pos_mapa(y, x));
+	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(y, x-2*jugador+1));
+	mmu_mapear_pagina(0x8002000, cr3, pos_mapa((y-2*jugador+1) % 44, x-2*jugador+1));
+	mmu_mapear_pagina(0x8003000, cr3, pos_mapa((y+2*jugador-1) % 44, x-2*jugador+1));
+	mmu_mapear_pagina(0x8004000, cr3, pos_mapa(((y-2*jugador+1) % 44), x));
+	mmu_mapear_pagina(0x8005000, cr3, pos_mapa(((y+2*jugador-1) % 44), x));
+	mmu_mapear_pagina(0x8006000, cr3, pos_mapa(y, x+2*jugador-1));
+	mmu_mapear_pagina(0x8007000, cr3, pos_mapa((y+2*jugador-1) % 44,x+2*jugador-1));
+	mmu_mapear_pagina(0x8008000, cr3, pos_mapa((y-2*jugador+1) % 44,x+2*jugador-1));
 	
 }
 
