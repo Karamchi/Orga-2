@@ -50,19 +50,9 @@ _isr%1:
     mul esi
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
-    xchg bx, bx
-    ;mov edi, 0xb8000 ; pantalla
-    ;mov esi, 0x0F4E0F49	; 'IN' al reves (por little endian). Vamos a imprimir esto por pantalla.
-    ;mov [edi], esi
     
-    ;mov esi, 0x043A0F54	; 'T:'
-    ;mov [edi+4], esi
-    
-    ;add eax, 65				; eax era el numero de interrupcion, lo pasamos a letra para imprimirlo en un solo caracter (esta en al)
-    ;mov [edi+8], al
-    ;mov byte[edi+9], 0x0F	; 0F es el color blanco
-    popad
-    
+	;call game_chau_zombi
+    ;jmp
     iret
 
 %endmacro
