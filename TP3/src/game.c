@@ -5,7 +5,7 @@
 */
 
 #include "game.h"
-
+char* tipos = "GCM";
 void game_jugador_mover(unsigned int jugador, unsigned int value) {
 	if (jugador==1) {
 		print(" ",0,jugA.pos,0x40);
@@ -21,7 +21,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 	if (jugador==1) {
 		if (jugA.zqq>0 && jugA.zep<8) {
 			jugA.zqq--;
-			juga.zep++;
+			jugA.zep++;
 			//(lanzar zombi)
 			//(imprimir zombie)
 		}
@@ -34,16 +34,20 @@ void game_lanzar_zombi(unsigned int jugador) {
 	}
 }
 void game_move_current_zombi(direccion dir) {
-	
+	unsigned int cr3 = rcr3() ;	
 	switch (dir) {
 		case (IZQ):
 			if (anteriorjug == 0){		//Jugador actual A
 				print("X", tareasA[(int)anteriorA].pos_j , tareasA[(int)anteriorA].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				tareasA[(int)anteriorA].pos_i = (tareasA[(int)anteriorA].pos_i - 2)%44 + 1; 	//ZombieA actual
+				mmu_mapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				printZombi(tareasA[(int)anteriorA]);
 			} else {			//Jugador actual B
 				print("X", tareasB[(int)anteriorB].pos_j , tareasB[(int)anteriorB].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				tareasB[(int)anteriorB].pos_i = (tareasB[(int)anteriorB].pos_i)%44 + 1;
+				mmu_mapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				printZombi(tareasB[(int)anteriorB]);
 			}
 			break;
@@ -51,11 +55,15 @@ void game_move_current_zombi(direccion dir) {
 		case (DER):
 			if (anteriorjug == 0){		//Jugador actual A
 				print("X", tareasA[(int)anteriorA].pos_j , tareasA[(int)anteriorA].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				tareasA[(int)anteriorA].pos_i = (tareasA[(int)anteriorA].pos_i)%44 + 1; 	//ZombieA actual
+				mmu_mapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				printZombi(tareasA[(int)anteriorA]);
 			} else {			//Jugador actual B
 				print("X", tareasB[(int)anteriorB].pos_j , tareasB[(int)anteriorB].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				tareasB[(int)anteriorB].pos_i = (tareasB[(int)anteriorB].pos_i - 2)%44 + 1;
+				mmu_mapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				printZombi(tareasB[(int)anteriorB]);
 			} 
 			break;
@@ -63,21 +71,23 @@ void game_move_current_zombi(direccion dir) {
 		case (ADE):
 			if (anteriorjug == 0){		//Jugador actual A
 				print("X", tareasA[(int)anteriorA].pos_j , tareasA[(int)anteriorA].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				tareasA[(int)anteriorA].pos_j = (tareasA[(int)anteriorA].pos_j) + 1; 	//ZombieA actual
 				if (tareasA[(int)anteriorA].pos_j == 78){
 					tareasA[(int)anteriorA].vivo = 0;
 					jugA.pts++;
 					jugA.zep--;
-				}
+				} else {mmu_mapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);}
 				printZombi(tareasA[(int)anteriorA]);
 			} else {			//Jugador actual B
 				print("X", tareasB[(int)anteriorB].pos_j , tareasB[(int)anteriorB].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				tareasB[(int)anteriorB].pos_j = (tareasB[(int)anteriorB].pos_j) - 1;
 				if (tareasB[(int)anteriorB].pos_j == 1){
 					tareasB[(int)anteriorB].vivo = 0;
 					jugB.pts++;
 					jugB.zep--;
-				}
+				} else {mmu_mapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);}
 				printZombi(tareasB[(int)anteriorB]);
 			}
 			break;
@@ -85,27 +95,29 @@ void game_move_current_zombi(direccion dir) {
 		case (ATR):
 			if (anteriorjug == 0){		//Jugador actual A
 				print("X", tareasA[(int)anteriorA].pos_j , tareasA[(int)anteriorA].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);
 				tareasA[(int)anteriorA].pos_j = (tareasA[(int)anteriorA].pos_j) - 1; 	//ZombieA actual
 				if (tareasA[(int)anteriorA].pos_j == 1){
 					tareasA[(int)anteriorA].vivo = 0;
 					jugA.pts--;
 					jugA.zep--;
-				}
+				} else {mmu_mapear_paginas_zombi(cr3, tareasA[(int)anteriorA].jugador, tareasA[(int)anteriorA].pos_j, tareasA[(int)anteriorA].pos_i);}
 				printZombi(tareasA[(int)anteriorA]);
 			} else {			//Jugador actual B
 				print("X", tareasB[(int)anteriorB].pos_j , tareasB[(int)anteriorB].pos_i, C_FG_WHITE+C_BG_GREEN);
+				mmu_unmapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);
 				tareasB[(int)anteriorB].pos_j = (tareasB[(int)anteriorB].pos_j) + 1;
 				if (tareasB[(int)anteriorB].pos_j == 78){
 					tareasB[(int)anteriorB].vivo = 0;
 					jugB.pts--;
 					jugB.zep--;
-				}
+				} else {mmu_mapear_paginas_zombi(cr3, tareasB[(int)anteriorB].jugador, tareasB[(int)anteriorB].pos_j, tareasB[(int)anteriorB].pos_i);}
 				printZombi(tareasB[(int)anteriorB]);
 			} 
 			break;
 	}
 	pintar_buffer_video_posta(jugA, jugB);
-	//Remapear Paginas 
+	//Remapear Paginas (ROULI)
 }
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){
 
