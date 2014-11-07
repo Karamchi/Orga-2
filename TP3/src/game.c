@@ -7,14 +7,24 @@
 #include "game.h"
 char* tipos = "GCM";
 void game_jugador_mover(unsigned int jugador, unsigned int value) {
-	if (jugador==1) {
+	if (jugador==0) {
 		print(" ",0,jugA.pos,0x40);
- 		jugA.pos=(jugA.pos+value-2)%44+1;
-		print((char*)&(jugA.tzl),0,jugA.pos,0x40);
+ 		jugA.pos=(jugA.pos+value-2);
+ 		if (jugA.pos==0) {jugA.pos=44;}
+ 		if (jugA.pos==45) {jugA.pos=1;}
+
+	    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+        p[(int)jugA.pos][0].c = (unsigned char) jugA.tzl;
+        p[(int)jugA.pos][0].a = (unsigned char) 0x4f;
 	} else {
 		print(" ",79,jugB.pos,0x10);
- 		jugB.pos=(jugB.pos+value-2)%44+1;
-		print((char*)&(jugB.tzl),79,jugB.pos,0x10);
+ 		jugB.pos=(jugB.pos+value-2);
+ 		if (jugB.pos==0) {jugB.pos=44;}
+ 		if (jugB.pos==45) {jugB.pos=1;}
+		
+	    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+        p[(int)jugB.pos][79].c = (unsigned char) jugB.tzl;
+        p[(int)jugB.pos][79].a = (unsigned char) 0x1f;
 	}
 }
 void game_lanzar_zombi(unsigned int jugador) {
@@ -133,13 +143,19 @@ void game_move_current_zombi(direccion dir) {
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){
 
 	if (jugador==0) {
-		unsigned int nuevoval=(jugA.tzl+value-2)%3;
+		unsigned int viejoval=(jugA.tzl=='C')+(jugA.tzl=='M')*2;
+		unsigned int nuevoval=(viejoval+value+1)%3;
 		jugA.tzl=tipos[nuevoval];
-		print((char*)&(jugA.tzl),0,jugA.pos,0x40);
+	    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+        p[(int)jugA.pos][0].c = (unsigned char) jugA.tzl;
+        p[(int)jugA.pos][0].a = (unsigned char) 0x4f;
 	} else {
-		unsigned int nuevoval=(jugB.tzl+value-2)%3;
+		unsigned int viejoval=(jugB.tzl=='C')+(jugB.tzl=='M')*2;
+		unsigned int nuevoval=(viejoval+value+1)%3;
 		jugB.tzl=tipos[nuevoval];
-		print((char*)&(jugB.tzl),79,jugA.pos,0x10);
+	    ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+        p[(int)jugB.pos][79].c = (unsigned char) jugB.tzl;
+        p[(int)jugB.pos][79].a = (unsigned char) 0x1f;
 	}
 }
 

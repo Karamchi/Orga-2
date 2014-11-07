@@ -37,8 +37,9 @@ global _isr%1
 
 _isr%1:
 
+	
     pushad
-    mov ecx, %1		; guardo para el sys66
+    mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
     cmp eax, 32
     je Reloj
@@ -113,7 +114,6 @@ iret
 ;; -------------------------------------------------------------------------- ;;
 Teclado:
 	
-	xchg bx, bx
 	call fin_intr_pic1
 	in al, 0x60
 	mov ebx, chars
@@ -139,7 +139,7 @@ Teclado:
 	je .imprimirSL
 	jmp .finposta
     .imprimirW:
-    push 3
+    push 1
     push 0
     call game_jugador_mover
 	jmp .fin
@@ -150,7 +150,7 @@ Teclado:
 	add ebx, 1
 	jmp .fin
     .imprimirS:
-    push 1
+    push 3
     push 0
     call game_jugador_mover
 	add ebx, 2
@@ -162,7 +162,7 @@ Teclado:
 	add ebx, 3
 	jmp .fin
     .imprimirI:
-    push 3
+    push 1
     push 1
     call game_jugador_mover
 	add ebx, 4
@@ -174,7 +174,7 @@ Teclado:
     call game_cambiar_tipo_zombi
 	jmp .fin
     .imprimirK:
-    push 1
+    push 3
     push 1
     call game_jugador_mover
 	add ebx, 6
@@ -196,9 +196,12 @@ Teclado:
 	add ebx, 10
     
     .fin:
+    pop eax
+    pop eax
 	imprimir_texto_mp ebx, 1, 0x0f, 0, 79	
 	jmp .finposta
     .fin2:
+    pop eax
 	imprimir_texto_mp ebx, 2, 0x0f, 0, 78	
     .finposta:
 	popad
@@ -209,12 +212,12 @@ Teclado:
 ;; -------------------------------------------------------------------------- ;;
 sys66:	;ecx numero de la interrupcion
 	call fin_intr_pic1
-	popad
 	push ecx
 	call game_move_current_zombi
 ;jmp idle?
 	pop ecx
-	mov eax, 0x42	;Esto es del ejercicio de Interrupciones
+	popad
+	;mov eax, 0x42	;Esto es del ejercicio de Interrupciones
 	iret
 	
 %define IZQ 0xAAA

@@ -67,12 +67,12 @@ void pintar_buffer_video() {
 			p[j][i+5]=(ca){' ',0x10};
 		}
 	}
-	p[47][37]=(ca){'0',0x40};//si dejamos esta funcion como "Inicializacion", esto puede ir acá
-	p[47][42]=(ca){'0',0x10};
-	p[47][31]=(ca){'8',0x40};
-	p[47][48]=(ca){'8',0x10};
-	p[25][0]=(ca){'M',0x40};
-	p[25][79]=(ca){'M',0x10};
+	p[47][37]=(ca){'0',0x4f};//si dejamos esta funcion como "Inicializacion", esto puede ir acá
+	p[47][42]=(ca){'0',0x1f};
+	p[47][31]=(ca){'8',0x4f};
+	p[47][48]=(ca){'8',0x1f};
+	p[25][0]=(ca){'M',0x4f};
+	p[25][79]=(ca){'M',0x1f};
 
 
 	/*
