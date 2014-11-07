@@ -227,7 +227,7 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 }
 
 void mmu_mapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x, unsigned char y) {
-	//y--;x--;
+	//y--;x--; 
 	mmu_mapear_pagina(0x8000000, cr3, pos_mapa(y, x));
 	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(y, x-2*jugador+1)); 
 	mmu_mapear_pagina(0x8002000, cr3, pos_mapa((y-2*jugador+44) % 44 + 1, x-2*jugador+1));
