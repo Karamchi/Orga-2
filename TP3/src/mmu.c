@@ -6,9 +6,9 @@
 */
 
 #include "mmu.h"
-// pos_mapa devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=0..43, col= 0..77
+// pos_mapa devuelve la direccion de la pagina correspondiente a la posicion del mapa pasada. fila=1..44, col= 1..78
 int pos_mapa(int fila, int col) {
-	return 0x400000+(col+78*fila)*0x1000;
+	return 0x400000+(col-1+78*(fila-1))*0x1000;
 }
 
 void mmu_inicializar() {
@@ -152,7 +152,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	    7 1 2          2 1 7
 	    9 5 3          4 5 8
 	*/
-	mmu_mapear_paginas_zombi((unsigned int) pd, jugador, 1+jugador*75, pos);
+	mmu_mapear_paginas_zombi((unsigned int) pd, jugador, 2+jugador*75, pos);
 	
 	return (int)pd;
 }
@@ -227,11 +227,10 @@ void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
 }
 
 void mmu_mapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x, unsigned char y) {
-	y--;x--;
-	// ESTO NO ESTA TERMINADO
+	//y--;x--;
 	mmu_mapear_pagina(0x8000000, cr3, pos_mapa(y, x));
-	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(y, x-2*jugador+1));
-	mmu_mapear_pagina(0x8002000, cr3, pos_mapa((y-2*jugador+1) % 44, x-2*jugador+1));
+	mmu_mapear_pagina(0x8001000, cr3, pos_mapa(y, x-2*jugador+1)); 
+	mmu_mapear_pagina(0x8002000, cr3, pos_mapa((y-2*jugador+44) % 44 + 1, x-2*jugador+1));
 	mmu_mapear_pagina(0x8003000, cr3, pos_mapa((y+2*jugador-1) % 44, x-2*jugador+1));
 	mmu_mapear_pagina(0x8004000, cr3, pos_mapa(((y-2*jugador+1) % 44), x));
 	mmu_mapear_pagina(0x8005000, cr3, pos_mapa(((y+2*jugador-1) % 44), x));
@@ -253,5 +252,3 @@ void mmu_unmapear_paginas_zombi(unsigned int cr3, char jugador, unsigned char x,
 	mmu_unmapear_pagina(0x8008000, cr3);
 	
 }
-
-
