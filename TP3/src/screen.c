@@ -67,6 +67,14 @@ void pintar_buffer_video() {
 			p[j][i+5]=(ca){' ',0x10};
 		}
 	}
+	p[47][37]=(ca){'0',0x40};//si dejamos esta funcion como "Inicializacion", esto puede ir acá
+	p[47][42]=(ca){'0',0x10};
+	p[47][31]=(ca){'8',0x40};
+	p[47][48]=(ca){'8',0x10};
+	p[25][0]=(ca){'M',0x40};
+	p[25][79]=(ca){'M',0x10};
+
+
 	/*
 		aca faltaría escribir la info de los relojes 
 	*/
@@ -83,9 +91,9 @@ void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char col
 
 void pintar_buffer_video_posta(info_jug jug1, info_jug jug2) {
 	printint(jug1.pts,47,36,0x40);
-	printint(jug2.pts,47,41,0x40);
+	printint(jug2.pts,47,41,0x10);
 	printint(jug1.zqq,47,36,0x40);
-	printint(jug2.zqq,47,41,0x40);
+	printint(jug2.zqq,47,41,0x10);
 }
 
 void printZombi(info_zombi z){
