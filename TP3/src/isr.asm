@@ -23,6 +23,7 @@ extern game_move_current_zombi
 extern game_jugador_mover
 extern game_cambiar_tipo_zombi
 extern game_lanzar_zombi
+extern game_chau_zombi
 
 ;; Sched
 extern sched_proximo_indice
@@ -51,7 +52,7 @@ _isr%1:
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     
-	;call game_chau_zombi
+	call game_chau_zombi
     ;jmp
     iret
 
@@ -112,6 +113,7 @@ iret
 ;; -------------------------------------------------------------------------- ;;
 Teclado:
 	
+	xchg bx, bx
 	call fin_intr_pic1
 	in al, 0x60
 	mov ebx, chars
@@ -210,6 +212,7 @@ sys66:	;ecx numero de la interrupcion
 	popad
 	push ecx
 	call game_move_current_zombi
+;jmp idle?
 	pop ecx
 	mov eax, 0x42	;Esto es del ejercicio de Interrupciones
 	iret

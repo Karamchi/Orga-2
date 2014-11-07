@@ -19,6 +19,9 @@ void sched_inicializar(){
 	jugB.zqq=20;
 	jugB.zep=8;
 	jugB.tzl='M';
+
+	//print((char*)&(jugA.tzl),1,jugA.pos,0x40);
+	//print((char*)&(jugB.tzl),79,jugB.pos,0x10);
 	
 	anteriorA=0;
 	anteriorB=0;
@@ -28,6 +31,7 @@ void sched_inicializar(){
 		tareasA[i].vivo=0;
 		tareasB[i].vivo=0;
 	}
+	//pintar_buffer_video_posta(jugA,jugB);
 }
 
 unsigned short sched_proximo_indice() {
