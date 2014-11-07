@@ -36,13 +36,14 @@ void game_lanzar_zombi(unsigned int jugador) {
 		if (jugA.zqq>0 && jugA.zep<8) {
 			jugA.zqq--;
 			jugA.zep++;
-			mmu_inicializar_dir_zombi(jugA.tzl,2,jugA.pos);
+			mmu_inicializar_dir_zombi(jugA.tzl,0,jugA.pos);
 			z.tipo=jugA.tzl;
-			z.pos_i=2;
-			z.pos_j=jugA.pos;
+			z.pos_i=jugA.pos;
+			z.pos_j=1;
 			for (i=0;i<8;i++) {
 				if (tareasA[i].vivo==0) {
 					tareasA[i]=z;
+					i = 8;
 				}
 			}
 			printZombi(z);
@@ -50,13 +51,15 @@ void game_lanzar_zombi(unsigned int jugador) {
 	} else {
 		if (jugB.zqq>0 && jugB.zep<8) {
 			jugB.zqq--;
-			mmu_inicializar_dir_zombi(jugB.tzl,78,jugB.pos);
+			jugB.zep++;
+			mmu_inicializar_dir_zombi(jugB.tzl,1,jugB.pos);
 			z.tipo=jugB.tzl;
-			z.pos_i=78;
-			z.pos_j=jugB.pos;
+			z.pos_i=jugB.pos;
+			z.pos_j=78;
 			for (i=0;i<8;i++) {
 				if (tareasB[i].vivo==0) {
 					tareasB[i]=z;
+					i = 8;
 				}
 			}
 			printZombi(z);
