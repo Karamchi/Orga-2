@@ -39,7 +39,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 			mmu_inicializar_dir_zombi(jugA.tzl,0,jugA.pos);
 			z.tipo=jugA.tzl;
 			z.pos_i=jugA.pos;
-			z.pos_j=1;
+			z.pos_j=2;
 			for (i=0;i<8;i++) {
 				if (tareasA[i].vivo==0) {
 					tareasA[i]=z;
@@ -55,7 +55,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 			mmu_inicializar_dir_zombi(jugB.tzl,1,jugB.pos);
 			z.tipo=jugB.tzl;
 			z.pos_i=jugB.pos;
-			z.pos_j=78;
+			z.pos_j=77;
 			for (i=0;i<8;i++) {
 				if (tareasB[i].vivo==0) {
 					tareasB[i]=z;
