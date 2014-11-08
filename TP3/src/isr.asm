@@ -13,7 +13,7 @@ sched_tarea_selector:   dw 0x00
 chars: db 'wasdijklslsr'
 int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Overflow(OF)    BOUND R.E(BR)   Invalid Opcode  Device NA(NM)   DOUBLE FAULT(DF)CSO             Invalid TSS(TS) Segment Not Pr. Stack S Fault   General Protect Page Fault(PF)  RESERVED        Math Fault(MF)  AlignmentCheck  Machine Check F Point Except    '
 offset: dd 0
-selector: dw 14
+selector: dw 0x70
 
 ;; PIC
 extern fin_intr_pic1
@@ -98,13 +98,14 @@ ISR 102
 Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
-	;call sched_proximo_indice
-	
-	;cmp ax, [selector]
-	;je .end
-	;	mov [selector], ax
-	;	jmp far [offset]
-	;	jmp .end
+	call sched_proximo_indice
+	;xchg bx, bx
+	shl ax, 3
+	cmp ax, [selector]
+	je .end
+		mov [selector], ax
+		jmp far [offset]
+		jmp .end
 		
 	.end:
 	popad
