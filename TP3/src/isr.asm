@@ -99,12 +99,12 @@ Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
 	call sched_proximo_indice
-	xchg bx, bx
 	shl ax, 3
 	cmp ax, [selector]
 	je .end
-		mov [selector], eax
-		jmp 0x78:0x0000;[offset]
+		mov [selector], ax
+	xchg bx, bx
+		jmp 0x78:0;far [offset]
 		jmp .end
 		
 	.end:

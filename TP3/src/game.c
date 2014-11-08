@@ -63,9 +63,10 @@ void game_lanzar_zombi(unsigned int jugador) {
 			for (i=0;i<8;i++) {
 				if (tareasB[i].vivo==0) {
 					tareasB[i]=z;
-					i = 8;
+					break;
 				}
 			}
+						tss_completar_libre(&(tss_zombisB[i]),jugB.tzl,1,jugB.pos);
 			printZombi(z);
 		}
 	} 

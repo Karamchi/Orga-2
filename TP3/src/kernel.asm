@@ -59,7 +59,7 @@ start:
 	call habilitar_A20    
 
     ; Cargar la GDT
-    xchg bx, bx
+    ;xchg bx, bx
 	lgdt [GDT_DESC]
 
     ; Setear el bit PE del registro CR0
@@ -138,7 +138,7 @@ BITS 32
 	 mov cr0, eax
 
     ; Inicializar tss
-	xchg bx, bx
+	;xchg bx, bx
 	call tss_inicializar
 	
     ; Inicializar tss de la tarea Idle
@@ -158,7 +158,7 @@ BITS 32
     call habilitar_pic
 	
     ; Cargar tarea inicial
-    xchg bx, bx
+    ;xchg bx, bx
     mov ax, 0x68
     ltr ax
 
@@ -173,7 +173,7 @@ BITS 32
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
-    xchg bx,bx
+    ;xchg bx,bx
     ;int 0x66
     jmp $
     jmp $

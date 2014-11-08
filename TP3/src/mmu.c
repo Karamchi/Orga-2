@@ -75,7 +75,7 @@ void mmu_inicializar_dir_kernel() {
 
 int pedir_pagina(){
 	contador_pags++;
-	breakpoint();
+	//breakpoint();
 	return (0x100000+(contador_pags-1)*0x1000);
 }
 

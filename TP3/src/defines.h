@@ -28,14 +28,14 @@
 /* -------------------------------------------------------------------------- */
 #define GDT_COUNT 31
 
-#define GDT_CODIGO_0		8
-#define GDT_DATOS_0		9
-#define GDT_CODIGO_3		10
-#define GDT_DATOS_3		11
+#define GDT_CODIGO_0		8  //0x40
+#define GDT_DATOS_0		9		 //0x48
+#define GDT_CODIGO_3		10 //0x50
+#define GDT_DATOS_3		11   //0x58
 #define GDT_PANTALLA	12
 #define GDT_TAREA_INICIAL	13
-#define GDT_IDLE	14
-#define GDT_ZOMBI_A8	15
+#define GDT_IDLE	14       //0x70
+#define GDT_ZOMBI_A8	15   //0x78
 #define GDT_ZOMBI_A7	16
 #define GDT_ZOMBI_A6	17
 #define GDT_ZOMBI_A5	18
