@@ -75,11 +75,12 @@ void mmu_inicializar_dir_kernel() {
 
 int pedir_pagina(){
 	contador_pags++;
+	breakpoint();
 	return (0x100000+(contador_pags-1)*0x1000);
 }
 
 //IDENTITY MAPPING.
-int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
+unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	/*
 	tipo: 'G', 'C' o 'M'
 	jugador: '0' o '1'
@@ -98,7 +99,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	    (unsigned char)   0x00,
 	    (unsigned char)   0x00,
 	    (unsigned char)   0x00,
-	    (unsigned int)    pt,
+	    (unsigned int)    pt >> 12,
 	};
 	int i;
 	for (i=1; i<1024; i++){
@@ -146,6 +147,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	for (i=0; i<1024; i++) {
 		dst[i]=src[i];
 	}
+	//mmu_unmapear_pagina((unsigned int) dst, rcr3());
 	//mapeamos las paginas:
 	/*  Jug A:         Jug B:
 	    8 6 4   		3 5 9
@@ -154,7 +156,7 @@ int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	*/
 	mmu_mapear_paginas_zombi((unsigned int) pd, jugador, 2+jugador*75, pos);
 	
-	return (int)pd;
+	return (unsigned int)pd;
 }
 
 //pre: asumimos que virtual y fisica terminan en 0s (apuntan a una pagina)

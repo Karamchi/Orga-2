@@ -47,7 +47,7 @@ int pos_mapa(int fila, int col); // devuelve la direccion de la pagina correspon
 int pedir_pagina();
 void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
-int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos); 
+unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos); 
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica); 
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
 

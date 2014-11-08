@@ -54,9 +54,16 @@ typedef struct str_tss {
     unsigned short  iomap;
 } __attribute__((__packed__, aligned (8))) tss;
 
+tss tss_inicial;
+tss tss_idle;
+
+tss tss_zombisA[CANT_ZOMBIS];
+tss tss_zombisB[CANT_ZOMBIS];
+
+
 void cargar_tarea_inicial();
 void tss_inicializar();
 void tss_inicializar_idle();
-void tss_completar_libre(tss t, char tipo, char jugador, int pos/*, bool interr*/);
+void tss_completar_libre(tss *t, char tipo, char jugador, int pos/*, bool interr*/);
 
 #endif  /* !__TSS_H__ */

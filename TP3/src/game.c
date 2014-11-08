@@ -5,6 +5,7 @@
 */
 
 #include "game.h"
+#include "tss.h" // ojo manzana
 char* tipos = "GCM";
 void game_jugador_mover(unsigned int jugador, unsigned int value) {
 	if (jugador==0) {
@@ -32,28 +33,30 @@ void game_lanzar_zombi(unsigned int jugador) {
 	z.jugador=jugador;
 	z.vivo=1;
 	int i;
+	//int cr3;
 	//breakpoint();
 	if (jugador==0) {
 		if (jugA.zqq>0 && jugA.zep<8) {
 			jugA.zqq--;
 			jugA.zep++;
-			mmu_inicializar_dir_zombi(jugA.tzl,0,jugA.pos);
+			//cr3=mmu_inicializar_dir_zombi(jugA.tzl,0,jugA.pos);
 			z.tipo=jugA.tzl;
 			z.pos_i=jugA.pos;
 			z.pos_j=2;
 			for (i=0;i<8;i++) {
 				if (tareasA[i].vivo==0) {
 					tareasA[i]=z;
-					i = 8;
+					break;
 				}
 			}
+			tss_completar_libre(&(tss_zombisA[i]),jugA.tzl,0,jugA.pos);
 			printZombi(z);
 		}
 	} else {
 		if (jugB.zqq>0 && jugB.zep<8) {
 			jugB.zqq--;
 			jugB.zep++;
-			mmu_inicializar_dir_zombi(jugB.tzl,1,jugB.pos);
+			//cr3=mmu_inicializar_dir_zombi(jugB.tzl,1,jugB.pos);
 			z.tipo=jugB.tzl;
 			z.pos_i=jugB.pos;
 			z.pos_j=77;
@@ -65,7 +68,10 @@ void game_lanzar_zombi(unsigned int jugador) {
 			}
 			printZombi(z);
 		}
-	} pintar_buffer_video_posta(jugA, jugB);
+	} 
+	
+	pintar_buffer_video_posta(jugA, jugB);
+	
 }
 void game_move_current_zombi(direccion dir) {
 	unsigned int cr3 = rcr3() ;	
@@ -178,7 +184,7 @@ void game_chau_zombi() {
 	pintar_buffer_video_posta(jugA, jugB);
 }
 
-game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp, int esp, int eip, short cs, short ds, short es, short fs, short gs, short ss, int eflags) {
+void game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp, int esp, int eip, short cs, short ds, short es, short fs, short gs, short ss, int eflags) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	int x=25;
 	int y=7;

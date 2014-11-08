@@ -8,20 +8,28 @@
 #include "tss.h"
 #include "i386.h"
 
-tss tss_inicial;
-tss tss_idle;
 
-tss tss_zombisA[CANT_ZOMBIS];
-tss tss_zombisB[CANT_ZOMBIS];
 
-void tss_completar_libre(tss t, char tipo, char jugador, int pos){
+void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 		int cr3 = mmu_inicializar_dir_zombi(tipo, jugador, pos);
-		t.cr3 = cr3;
-		jugador -= 65; // jugador A: 0, jugador B: 1 
-		t.eip = pos_mapa(1+jugador*75, pos);
-		t.eflags=0x202;
-		t.esp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
-		t.ebp = t.eip; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		//breakpoint();
+		t->cr3 = cr3;
+		//jugador -= 65; // jugador A: 0, jugador B: 1 
+		t->eip = pos_mapa(2+jugador*75, pos);
+		t->eflags=0x202;
+		t->esp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t->ebp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		short seg_dat = GDT_DATOS_3 << 3;
+		short seg_cod = GDT_CODIGO_3 << 3;
+		t->es = seg_dat;
+		t->cs = seg_cod;
+		t->ss = seg_dat;
+		t->ds = seg_dat;
+		t->fs = seg_dat;
+		t->gs = seg_dat;
+		
+		t->esp0 = pedir_pagina() + 0x1000;
+
 }
 
 void tss_inicializar() {

@@ -52,8 +52,8 @@ _isr%1:
     mul esi
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
-    
-	call game_chau_zombi
+    xchg bx, bx
+		call game_chau_zombi
     ;jmp
     iret
 
@@ -99,12 +99,12 @@ Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
 	call sched_proximo_indice
-	;xchg bx, bx
+	xchg bx, bx
 	shl ax, 3
 	cmp ax, [selector]
 	je .end
-		mov [selector], ax
-		jmp far [offset]
+		mov [selector], eax
+		jmp 0x78:0x0000;[offset]
 		jmp .end
 		
 	.end:
