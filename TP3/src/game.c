@@ -32,6 +32,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 	z.jugador=jugador;
 	z.vivo=1;
 	int i;
+	//breakpoint();
 	if (jugador==0) {
 		if (jugA.zqq>0 && jugA.zep<8) {
 			jugA.zqq--;

@@ -97,7 +97,7 @@ BITS 32
    	xor ebx, ebx				
 
     .ciclo:
-	mov dword [esi+ebx], 0x20202020
+	mov dword [fs:ebx], 0x20202020
 	add ebx, 4
 	
 	cmp ebx, 8000
@@ -105,16 +105,16 @@ BITS 32
 
 	
 	;pinto bordes	
-	mov word [esi], 0x4020	;rojo, espacio
+	mov word [fs:0], 0x4020	;rojo, espacio
 	mov eax, 158
 
     .col_bordes:
-	mov dword [eax + esi], 0x40201020	;rojo, espacio, azul, espacio
+	mov dword [fs:eax], 0x40201020	;rojo, espacio, azul, espacio
 
 	add eax, 160
 	cmp eax, 7840	; 49*160
 	jl .col_bordes
-	mov word [esi+eax], 0x1020	;azul, espacio
+	mov word [fs:eax], 0x1020	;azul, espacio
 	
 	call pintar_buffer_video ;manzana, aca quizas haya que pasar parametros en algun momento
 	;pop ebp
