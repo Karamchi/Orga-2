@@ -62,4 +62,3 @@ unsigned short sched_proximo_indice() {
 	anteriorjug=2;
   	return GDT_IDLE;
 }
-

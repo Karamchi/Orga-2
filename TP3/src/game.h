@@ -24,5 +24,6 @@ void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value);
 
 void game_chau_zombi();
 
+void cambiar_modo_debug();
 
 #endif  /* !__GAME_H__ */

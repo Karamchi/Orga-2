@@ -185,29 +185,13 @@ void game_chau_zombi() {
 	pintar_buffer_video_posta(jugA, jugB);
 }
 
-void game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp, int esp, int eip, short cs, short ds, short es, short fs, short gs, short ss, int eflags) {
-	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
-	int x=25;
-	int y=7;
-	int width=50;
-	int height=36;
-	
-	int i;
-	int j;
-	for (i = x; i < x + width; i++) {
-		p[y][i] = (ca){' ',0};
-		p[y+height][i] = (ca){' ',0};
+void cambiar_modo_debug() {
+	if (debug==0) {
+		debug=1;
+	} else if (mostrando==0) {
+		debug=0;
+	} else {
+		mostrando=0;
+		recuperarPantalla();
 	}
-	for (i = y+1; i < y + height -1; i++) {
-		p[i][x] = (ca){' ',0};
-		p[i][x+width] = (ca){' ',0};
-		for (j = x + 1; j < x + width - 1; j++) p[i][j] = (ca){' ', 0x80};
-	}
-	// hay que printear los valores de los registros
-	
-	
 }
-
-
-
-

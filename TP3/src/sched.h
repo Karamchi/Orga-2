@@ -36,6 +36,9 @@ char anteriorA;
 char anteriorB;
 char anteriorjug;
 
+char debug;
+char mostrando;
+
 void sched_inicializar();
 unsigned short sched_proximo_indice();
 

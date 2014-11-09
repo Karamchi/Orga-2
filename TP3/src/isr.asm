@@ -10,7 +10,7 @@ BITS 32
 
 sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
-chars: db 'wasdijklslsr'
+chars: db 'wasdijklslsry'
 int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Overflow(OF)    BOUND R.E(BR)   Invalid Opcode  Device NA(NM)   DOUBLE FAULT(DF)CSO             Invalid TSS(TS) Segment Not Pr. Stack S Fault   General Protect Page Fault(PF)  RESERVED        Math Fault(MF)  AlignmentCheck  Machine Check F Point Except    '
 offset: dd 0
 selector: dw 0x70
@@ -24,6 +24,9 @@ extern game_jugador_mover
 extern game_cambiar_tipo_zombi
 extern game_lanzar_zombi
 extern game_chau_zombi
+extern bool_debug
+extern game_print_debug
+extern cambiar_modo_debug
 
 ;; Sched
 extern sched_proximo_indice
@@ -55,7 +58,32 @@ _isr%1:
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     ;xchg bx, bx
-		call game_chau_zombi
+	call game_chau_zombi
+    call bool_debug
+    cmp al, 1
+    jne .fin
+    ;push cr4
+    ;push cr3
+    ;push cr2
+    ;push cr0
+    pushfd
+    push gs
+    push fs
+    push es
+    push ds
+    push cs
+    call .picaron
+    .picaron:
+    push esp
+    push ebp
+    push edi
+    push esi
+    push edx
+    push ecx
+    push ebx
+    push eax
+    call game_print_debug
+    .fin:
     ;jmp
     popad
     iret
@@ -141,6 +169,8 @@ Teclado:
 	je .imprimirSR
 	cmp al, 0x2A
 	je .imprimirSL
+	cmp al, 0x15
+	je .imprimirY
 	jmp .finposta
     .imprimirW:
     push 1
@@ -199,6 +229,11 @@ Teclado:
     call game_lanzar_zombi
 	add ebx, 10
 	jmp .fin2
+    .imprimirY:
+    call cambiar_modo_debug
+    add ebx, 11
+	imprimir_texto_mp ebx, 1, 0x0f, 0, 79	
+    jmp .fin
     
     .fin:
     pop eax

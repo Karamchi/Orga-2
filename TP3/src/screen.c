@@ -118,3 +118,73 @@ void printZombi(info_zombi z){
 		}
 	}	
 }
+
+char bool_debug(){return debug;}
+
+void game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp, int esp, int eip, short cs, short ds, short es, short fs, short gs, short ss, int eflags) {
+	if (debug) {
+		ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+		int x=25;
+		int y=7;
+		int width=50;
+		int height=36;
+	
+		int i;
+		int j;
+		for (i = x; i < x + width; i++) {
+			p[y][i] = (ca){' ',0};
+			p[y+height][i] = (ca){' ',0};
+		}
+		for (i = y+1; i < y + height -1; i++) {
+			p[i][x] = (ca){' ',0};
+			p[i][x+width] = (ca){' ',0};
+			for (j = x + 1; j < x + width - 1; j++) p[i][j] = (ca){' ', 0x80};
+		}
+		//guardar pantalla
+		ca* fin=(ca*) 0xb8fa0;
+		for (i=0;i<4000;i++) {
+			fin[i]=p[i/50][i%50];
+		}
+		print ("eax",27,10,0x80);
+		print_hex(eax, 8,31,10,0x8f);
+		print ("ebx",27,12,0x80);
+		print_hex(ebx, 8,31,12,0x8f);
+		print ("ecx",27,14,0x80);
+		print_hex(ecx, 8,31,14,0x8f);
+		print ("edx",27,16,0x80);
+		print_hex(edx, 8,31,16,0x8f);
+		print ("esi",27,18,0x80);
+		print_hex(esi, 8,31,18,0x8f);
+		print ("edi",27,20,0x80);
+		print_hex(edi, 8,31,20,0x8f);
+		print ("ebp",27,22,0x80);
+		print_hex(ebp, 8,31,22,0x8f);
+		print ("esp",27,24,0x80);
+		print_hex(esp, 8,31,24,0x8f);
+		print ("eip",27,26,0x80);
+		print_hex(eip, 8,31,26,0x8f);
+		print ("cs",28,28,0x80);
+		print_hex(cs, 8,31,28,0x8f);
+		print ("ds",28,30,0x80);
+		print_hex(ds, 4,31,30,0x8f);
+		print ("es",28,32,0x80);
+		print_hex(es, 4,31,32,0x8f);
+		print ("fs",28,34,0x80);
+		print_hex(fs, 4,31,34,0x8f);
+		print ("gs",28,36,0x80);
+		print_hex(gs, 4,31,36,0x8f);
+		print ("ss",28,38,0x80);
+		print_hex(ss, 4,31,38,0x8f);
+		print ("eflags",28,40,0x80);
+		print_hex(eflags, 28,34,40,0x8f);
+	}
+}
+
+void recuperarPantalla(){
+	int i;
+	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+	ca* fin=(ca*) 0xb8fa0;
+	for (i=0;i<4000;i++) {
+		p[i/50][i%50]=fin[i];
+	}
+}
