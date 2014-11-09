@@ -37,6 +37,4 @@ void game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int 
 
 void recuperarPantalla();
 
-char bool_debug();
-
 #endif  /* !__SCREEN_H__ */

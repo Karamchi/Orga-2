@@ -184,14 +184,3 @@ void game_chau_zombi() {
 	}
 	pintar_buffer_video_posta(jugA, jugB);
 }
-
-void cambiar_modo_debug() {
-	if (debug==0) {
-		debug=1;
-	} else if (mostrando==0) {
-		debug=0;
-	} else {
-		mostrando=0;
-		recuperarPantalla();
-	}
-}

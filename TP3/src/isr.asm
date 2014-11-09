@@ -14,6 +14,8 @@ chars: db 'wasdijklslsry'
 int_msg: db 'Divide error(DE)RESERVED(DB)    NMI Interrupt   Breakpoint(BP)  Overflow(OF)    BOUND R.E(BR)   Invalid Opcode  Device NA(NM)   DOUBLE FAULT(DF)CSO             Invalid TSS(TS) Segment Not Pr. Stack S Fault   General Protect Page Fault(PF)  RESERVED        Math Fault(MF)  AlignmentCheck  Machine Check F Point Except    '
 offset: dd 0
 selector: dw 0x70
+debug: db 0
+mostrando: db 0
 
 ;; PIC
 extern fin_intr_pic1
@@ -24,7 +26,7 @@ extern game_jugador_mover
 extern game_cambiar_tipo_zombi
 extern game_lanzar_zombi
 extern game_chau_zombi
-extern bool_debug
+extern recuperarPantalla
 extern game_print_debug
 extern cambiar_modo_debug
 
@@ -59,30 +61,45 @@ _isr%1:
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     ;xchg bx, bx
 	call game_chau_zombi
-    call bool_debug
-    cmp al, 1
+    cmp byte [debug], 1
     jne .fin
-    ;push cr4
-    ;push cr3
-    ;push cr2
-    ;push cr0
-    pushfd
-    push gs
-    push fs
-    push es
-    push ds
-    push cs
-    call .picaron
-    .picaron:
-    push esp
-    push ebp
-    push edi
-    push esi
-    push edx
-    push ecx
-    push ebx
-    push eax
-    call game_print_debug
+        ;push cr4
+        ;push cr3
+        ;push cr2
+        ;push cr0
+        pushfd
+        push gs
+        push fs
+        push es
+        push ds
+        push cs
+        call .picaron
+        .picaron:
+        push esp
+        push ebp
+        push edi
+        push esi
+        push edx
+        push ecx
+        push ebx
+        push eax
+        call game_print_debug
+        pop eax
+        pop ebx
+        pop ecx
+        pop edx
+        pop esi
+        pop edi
+        pop ebp
+        pop esp
+        ret
+        pop cs
+        pop ds
+        pop es
+        pop fs
+        pop gs
+        popfd
+
     .fin:
     ;jmp
     popad
@@ -230,11 +247,25 @@ Teclado:
 	add ebx, 10
 	jmp .fin2
     .imprimirY:
-    call cambiar_modo_debug
+	cmp byte [debug], 0
+    jne .enDebug
+	    mov byte [debug], 1
+        jmp .finY
+    .enDebug:
+        cmp byte [mostrando], 0
+        jne .recuperar
+            mov byte [debug], 0
+            jmp .finY
+        .recuperar:
+            mov byte [mostrando], 0
+            pushad
+            call recuperarPantalla
+            popad
+    .finY:
     add ebx, 11
 	imprimir_texto_mp ebx, 1, 0x0f, 0, 79	
-    jmp .fin
-    
+    jmp .finposta
+
     .fin:
     pop eax
     pop eax
