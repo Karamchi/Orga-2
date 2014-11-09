@@ -27,7 +27,6 @@ void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 		t->ds = seg_dat;
 		t->fs = seg_dat;
 		t->gs = seg_dat;
-		
 		t->esp0 = pedir_pagina() + 0x1000;
 		t->iomap = 0xFFFF;
 

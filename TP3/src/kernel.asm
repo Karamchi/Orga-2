@@ -81,6 +81,7 @@ BITS 32
 	mov gs, ax
 	mov ax, 1100000b
 	mov fs, ax
+	
 
     ; Establecer la base de la pila
 	mov ebp, 0x27000

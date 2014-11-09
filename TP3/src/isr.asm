@@ -36,9 +36,11 @@ extern sched_proximo_indice
 global _isr%1
 
 _isr%1:
-
-	
+		%if %1=8 || %1=10 || %1=11 || %1=12 || %1=13 || %1=14 || %1=17
+		add esp, 4
+		%endif 
     pushad
+    
     mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
     cmp eax, 32
@@ -52,9 +54,10 @@ _isr%1:
     mul esi
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
-    xchg bx, bx
+    ;xchg bx, bx
 		call game_chau_zombi
     ;jmp
+    popad
     iret
 
 %endmacro
@@ -103,8 +106,8 @@ Reloj:
 	cmp ax, [selector]
 	je .end
 		mov [selector], ax
-	xchg bx, bx
-		jmp 0x78:0;far [offset]
+		;xchg bx, bx
+		jmp far [offset]
 		jmp .end
 		
 	.end:
