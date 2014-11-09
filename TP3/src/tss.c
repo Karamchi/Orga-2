@@ -19,14 +19,15 @@ void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 		t->eflags=0x202;
 		t->esp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
 		t->ebp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
-		short seg_dat = GDT_DATOS_3 << 3;
-		short seg_cod = GDT_CODIGO_3 << 3;
+		short seg_dat = 0x5B;
+		short seg_cod = 0x53;
 		t->es = seg_dat;
 		t->cs = seg_cod;
 		t->ss = seg_dat;
 		t->ds = seg_dat;
 		t->fs = seg_dat;
 		t->gs = seg_dat;
+		t->ss0 = 0x48;
 		t->esp0 = pedir_pagina() + 0x1000;
 		t->iomap = 0xFFFF;
 

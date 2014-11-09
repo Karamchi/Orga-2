@@ -60,7 +60,15 @@ _isr%1:
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     ;xchg bx, bx
-	call game_chau_zombi
+    
+    push eax	; si no estoy en la idle, mato al zombi
+    str ax
+		cmp ax, 0x70
+		je .estoy_en_idle
+		call game_chau_zombi
+    jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
+		pop eax
+		.estoy_en_idle:
     cmp byte [debug], 1
     jne .fin
         ;push cr4
@@ -151,7 +159,7 @@ Reloj:
 	cmp ax, [selector]
 	je .end
 		mov [selector], ax
-		;xchg bx, bx
+		xchg bx, bx
 		jmp far [offset]
 		jmp .end
 		
