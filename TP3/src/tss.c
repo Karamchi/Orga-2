@@ -17,8 +17,8 @@ void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 		//jugador -= 65; // jugador A: 0, jugador B: 1 
 		t->eip = 0x8000000;//pos_mapa(2+jugador*75, pos);
 		t->eflags=0x202;
-		t->esp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
-		t->ebp = t->eip + 0x1000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t->esp = 0x8001000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t->ebp = 0x8001000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
 		short seg_dat = 0x5B;
 		short seg_cod = 0x53;
 		t->es = seg_dat;

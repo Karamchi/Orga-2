@@ -155,7 +155,7 @@ Reloj:
 	call fin_intr_pic1
 	call proximo_reloj
 	call sched_proximo_indice
-	shl ax, 3
+	;shl ax, 3
 	cmp ax, [selector]
 	je .end
 		mov [selector], ax

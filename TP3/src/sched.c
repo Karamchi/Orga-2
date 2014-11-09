@@ -41,7 +41,7 @@ unsigned short sched_proximo_indice() {
 			if (tareasB[i%8].vivo==1) {
 				anteriorjug=0;
 				anteriorB=i%8;
-				return i%8+GDT_ZOMBI_B8;
+				return ((i%8+GDT_ZOMBI_B8) << 3) + 3;
 			}
 		} 
 	} 
@@ -49,16 +49,16 @@ unsigned short sched_proximo_indice() {
 		if (tareasA[i%8].vivo==1) {
 			anteriorjug=1;
 			anteriorA=i%8;
-			return i%8+GDT_ZOMBI_A8;
+			return ((i%8+GDT_ZOMBI_A8) << 3) + 3;
 		}
 	} 
 	for (i=anteriorB+1;i<anteriorB+9;i++) {
 		if (tareasB[i%8].vivo==1) {
 			anteriorjug=0;
 			anteriorB=i%8;
-			return i%8+GDT_ZOMBI_B8;
+			return ((i%8+GDT_ZOMBI_B8) << 3) + 3;
 		}
 	} 
 	anteriorjug=2;
-  	return GDT_IDLE;
+  	return GDT_IDLE << 3;
 }

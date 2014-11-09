@@ -91,7 +91,7 @@ unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	pd[0] = (page_dir_entry) { 
 	    (unsigned char)   0x01,
 	    (unsigned char)   0x01,
-	    (unsigned char)   0x00,
+	    (unsigned char)   0x01,
 	    (unsigned char)   0x00,
 	    (unsigned char)   0x00,
 	    (unsigned char)   0x00,
@@ -121,7 +121,7 @@ unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 		pt[i] = (page_table_entry) { 
 		    (unsigned char)   0x01,
 		    (unsigned char)   0x01,
-		    (unsigned char)   0x00,
+		    (unsigned char)   0x01,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
 		    (unsigned char)   0x00,
@@ -187,7 +187,7 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 		pd[off] = (page_dir_entry){
 			(unsigned char)   0x01,
 			(unsigned char)   0x01,
-			(unsigned char)   0x00,
+			(unsigned char)   0x01,
 			(unsigned char)   0x00,
 			(unsigned char)   0x00,
 			(unsigned char)   0x00,
@@ -204,7 +204,7 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 	pt[off] = (page_table_entry){
 		(unsigned char)   0x01,
 		(unsigned char)   0x01,
-		(unsigned char)   0x00,
+		(unsigned char)   0x01,
 		(unsigned char)   0x00,
 		(unsigned char)   0x00,
 		(unsigned char)   0x00,
