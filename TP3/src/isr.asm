@@ -60,20 +60,16 @@ _isr%1:
     mul esi
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
-    ;xchg bx, bx
     
-    push eax	
-    ;str ax
-	cmp ax, 0x70 ; si no estoy en la idle, mato al zombi
+	cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
 	je .fin
         pushad                                          ; quiero guardar todo para imprimirlo
 		call game_chau_zombi
         popad
-        jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
-		pop eax
+		;xchg bx, bx
 
         cmp byte [debug], 1
-        jne .fin
+        jne .sinDebug
 
             mov [esp-16], eax        ;push manual
             mov eax, cr4
@@ -119,6 +115,8 @@ _isr%1:
             pop fs
             pop gs
             popfd
+		.sinDebug:
+    		jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
     .fin:
     popad
     iret

@@ -6,6 +6,7 @@
 */
 
 #include "screen.h"
+	#include "i386.h"
 
 
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr) {
@@ -127,22 +128,25 @@ void game_print_debug(int eax) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	int x=25;
 	int y=7;
-	int width=50;
+	int width=29;
 	int height=36;
 
 	int i;
 	int j;
 	for (i = x; i < x + width; i++) {
 		p[y][i] = (ca){' ',0};
-		p[y+height][i] = (ca){' ',0};
+		p[y+height-1][i] = (ca){' ',0};
 	}
 	for (i = y+1; i < y + height -1; i++) {
 		p[i][x] = (ca){' ',0};
-		p[i][x+width] = (ca){' ',0};
-		for (j = x + 1; j < x + width - 1; j++) p[i][j] = (ca){' ',(i==8)*0x10+0x70};
+		p[i][x+width-1] = (ca){' ',0};
+		for (j = x + 1; j < x + width - 1; j++) p[i][j] = (ca){' ',0x70};
+	}
+	for (i = x+1; i < x + width-1; i++) {
+		p[y+1][i] = (ca){' ',0x10};
 	}
 	//guardar pantalla
-	ca* fin=(ca*) 0xb8fa0;
+	ca* fin=(ca*) 0xb9fa0;
 	for (i=0;i<4000;i++) {
 		fin[i]=p[i/50][i%50];
 	}
@@ -174,31 +178,33 @@ void game_print_debug(int eax) {
 	//b,c,d,si,di
 	//rbp (viejo, dice donde empieza la pila de la funcion que llama)
 
+	;breakpoint();
+
 	int* pos=&eax;
 	int* base=(int*)(*(pos-6*4));
 	char* cosasAimprimir[]={"eax","ebx","ecx","edx","esi","edi","ebp","esp","eip","cs","ds","es","fs","gs","ss","cr0","cr2","cr3","cr4"};
 	
 	for (i=0;i<9;i++) {
-		print (cosasAimprimir[i],27,i*2+10,0x80);
-		print_hex (*pos,8,31,i*2+10,0x80);
+		print (cosasAimprimir[i],27,i*2+10,0x70);
+		print_hex (*pos,8,31,i*2+10,0x7f);
 		pos-=4;
 	}
-	for (i=9;i<14;i++) {
-		print (cosasAimprimir[i],27,i*2+10,0x80);
-		print_hex (*pos,4,31,i*2+10,0x80);
+	for (i=9;i<15;i++) {
+		print (cosasAimprimir[i],28,i*2+10,0x70);
+		print_hex (*pos,4,31,i*2+10,0x7f);
 		pos-=4; //?
 	}
-	print ("eflags",40,28,0x80);
-	print_hex(*pos,28,34,40,0x8f);
+	print ("eflags",28,40,0x70);
+	//print_hex(*pos,28,34,40,0x7f);
 	for (i=0;i<4;i++) {
-		print (cosasAimprimir[i+15],40,i*2+10,0x80);
-		print_hex (*pos,8,44,i*2+10,0x80);
+		print (cosasAimprimir[i+15],40,i*2+10,0x70);
+		print_hex (*pos,8,44,i*2+10,0x7f);
 		pos-=4;
 	}
-	print ("stack",40,27,0x8f);
+	print ("stack",40,27,0x70);
 	for (i=0;pos>=base;i++) {
-		print_hex(*pos,8,40,i*2+10,0x80);
-		pos-=8; //?
+		print_hex(*pos,8,40,i+30,0x7f);
+		pos-=4; //?
 	}
 }
 
