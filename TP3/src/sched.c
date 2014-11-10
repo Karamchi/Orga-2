@@ -20,18 +20,16 @@ void sched_inicializar(){
 	jugB.zep=0;
 	jugB.tzl='M';
 
-	//print((char*)&(jugA.tzl),1,jugA.pos,0x40);
-	//print((char*)&(jugB.tzl),79,jugB.pos,0x10);
-	
 	anteriorA=0;
 	anteriorB=0;
 	anteriorjug=0;
 	int i;
 	for (i=0;i<8;i++) {
+		tareasA[i].reloj=0;
+		tareasB[i].reloj=0;
 		tareasA[i].vivo=0;
 		tareasB[i].vivo=0;
 	}
-	//pintar_buffer_video_posta(jugA,jugB);
 }
 
 unsigned short sched_proximo_indice() {
@@ -41,6 +39,7 @@ unsigned short sched_proximo_indice() {
 			if (tareasB[i%8].vivo==1) {
 				anteriorjug=1;
 				anteriorB=i%8;
+                tareasB[i%8].reloj=(tareasB[i%8].reloj+1)%4;
 				return ((i%8+GDT_ZOMBI_B8) << 3) + 3;
 			}
 		} 
@@ -49,6 +48,7 @@ unsigned short sched_proximo_indice() {
 		if (tareasA[i%8].vivo==1) {
 			anteriorjug=0;
 			anteriorA=i%8;
+            tareasA[i%8].reloj=(tareasA[i%8].reloj+1)%4;
 			return ((i%8+GDT_ZOMBI_A8) << 3) + 3;
 		}
 	} 
@@ -56,6 +56,7 @@ unsigned short sched_proximo_indice() {
 		if (tareasB[i%8].vivo==1) {
 			anteriorjug=1;
 			anteriorB=i%8;
+            tareasB[i%8].reloj=(tareasB[i%8].reloj+1)%4;
 			return ((i%8+GDT_ZOMBI_B8) << 3) + 3;
 		}
 	} 

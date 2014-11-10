@@ -57,9 +57,9 @@ void pintar_buffer_video() {
 		p[48][i] = (ca){' ',0};
 		p[49][i] = (ca){' ',0};
 	}
-	for (i=1; i<9; i++) {
-		p[46][4+i*2] = (ca){i+48,0x0f};
-		p[46][60+i*2] = (ca){i+48,0x0f};
+	for (i=0; i<8; i++) {
+		p[46][4+i*2] = (ca){i+'1',0x0f};
+		p[46][60+i*2] = (ca){i+'1',0x0f};
 	}
 	for(i=35; i<40; i++) {
 		for (j=45; j<50; j++) {
@@ -67,19 +67,19 @@ void pintar_buffer_video() {
 			p[j][i+5]=(ca){' ',0x10};
 		}
 	}
-	p[47][37]=(ca){'0',0x4f};//si dejamos esta funcion como "Inicializacion", esto puede ir acá
+	p[47][37]=(ca){'0',0x4f}; //pts
 	p[47][42]=(ca){'0',0x1f};
-	p[47][31]=(ca){'2',0x4f};
+	p[47][31]=(ca){'2',0x4f}; //zqq
 	p[47][32]=(ca){'0',0x4f};
 	p[47][47]=(ca){'2',0x1f};
 	p[47][48]=(ca){'0',0x1f};
-	p[25][0]=(ca){'M',0x4f};
+	p[25][0]=(ca){'M',0x4f};  //pos y tipo
 	p[25][79]=(ca){'M',0x1f};
 
-
-	/*
-		aca faltaría escribir la info de los relojes 
-	*/
+	for (i=0; i<8; i++) { //relojes
+		p[48][4+i*2] = (ca){'X',0x04};
+		p[48][60+i*2] = (ca){'X',0x01};
+	}
 }
 
 void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char color) {
@@ -91,11 +91,11 @@ void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char col
 }
 
 
-void pintar_buffer_video_posta(info_jug jug1, info_jug jug2) {
-	printint(jug1.zqq,47,31,0x4f);
-	printint(jug2.zqq,47,47,0x1f);
-	printint(jug1.pts,47,36,0x4f);
-	printint(jug2.pts,47,41,0x1f);
+void pintar_buffer_video_posta() {
+	printint(jugA.zqq,47,31,0x4f);
+	printint(jugB.zqq,47,47,0x1f);
+	printint(jugA.pts,47,36,0x4f);
+	printint(jugB.pts,47,41,0x1f);
 }
 
 void printZombi(info_zombi z){
@@ -208,5 +208,27 @@ void recuperarPantalla(){
 	ca* fin=(ca*) 0xb8fa0;
 	for (i=0;i<4000;i++) {
 		p[i/50][i%50]=fin[i];
+	}
+}
+
+void pintar_relojes(){
+	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+	char* relojes="|/--";
+	relojes[3]=0x5C;
+	int i;
+	info_zombi tarea;
+	for (i=0;i<8;i++) {
+		tarea=tareasA[i];
+		if (tarea.vivo==1) {
+			p[48][4+2*i]=(ca){relojes[tarea.reloj],0x0f};
+		} else {
+			p[48][4+2*i]=(ca){'X',0x04};
+		}
+		tarea=tareasB[i];
+		if (tarea.vivo==1) {
+			p[48][60+2*i]=(ca){relojes[tarea.reloj],0x0f};
+		} else {
+			p[48][60+2*i]=(ca){'X',0x01};
+		}
 	}
 }

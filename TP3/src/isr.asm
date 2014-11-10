@@ -29,6 +29,7 @@ extern game_chau_zombi
 extern recuperarPantalla
 extern game_print_debug
 extern cambiar_modo_debug
+extern pintar_relojes
 
 ;; Sched
 extern sched_proximo_indice
@@ -169,6 +170,7 @@ Reloj:
 	je .end
 		mov [selector], ax
 		jmp far [offset]
+        call pintar_relojes
 		jmp .end
 		
 	.end:
@@ -278,7 +280,7 @@ Teclado:
             call recuperarPantalla
             popad
     .finY:
-    add ebx, 11
+    add ebx, 12
 	imprimir_texto_mp ebx, 1, 0x0f, 0, 79	
     jmp .finposta
 
