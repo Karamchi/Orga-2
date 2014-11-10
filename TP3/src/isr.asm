@@ -71,8 +71,11 @@ _isr%1:
 
         cmp byte [debug], 1
         jne .sinDebug
-
-            mov [esp-16], eax        ;push manual
+        
+        	popad						;recupero originales
+        	pushad						; pero no los piso
+        
+            mov [esp-20], eax        ;push manual
             mov eax, cr4
             push eax
             mov eax, cr3
@@ -85,6 +88,7 @@ _isr%1:
             pop eax
             
             pushfd
+            push ss
             push gs
             push fs
             push es
@@ -118,6 +122,7 @@ _isr%1:
             pop es
             pop fs
             pop gs
+            pop ss
             pop eax
             mov cr0, eax
             pop eax
@@ -129,9 +134,9 @@ _isr%1:
             popfd
             
 		.sinDebug:
-    		jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
+    	jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
+    	popad
     .fin:
-    popad
     ;popfd
     iret
 

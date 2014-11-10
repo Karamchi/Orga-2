@@ -126,6 +126,7 @@ void printZombi(info_zombi z){
 
 void game_print_debug(int stackpointer) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+	print_hex ((unsigned int)stackpointer,8,1,40,0x7f);
 	int x=25;
 	int y=7;
 	int width=29;
@@ -180,32 +181,37 @@ void game_print_debug(int stackpointer) {
 	//rbp (viejo, dice donde empieza la pila de la funcion que llama)
 
 
-	int* pos=(int*)stackpointer + 4;
-	int* base=(int*)(*(pos+6*4));
+	int* pos=(int*)(stackpointer);
+	//int* base=(int*)(*(pos+6*4));
 	char* cosasAimprimir[]={"eax","ebx","ecx","edx","esi","edi","ebp","esp","eip","cs","ds","es","fs","gs","ss","cr0","cr2","cr3","cr4"};
 	
 	for (i=0;i<9;i++) {
 		print (cosasAimprimir[i],27,i*2+10,0x70);
 		print_hex (*pos,8,31,i*2+10,0x7f);
-		pos+=4;
+		pos++;
+		print_hex ((unsigned int)pos,8,1,i,0x7f);
 	}
 	for (i=9;i<15;i++) {
 		print (cosasAimprimir[i],28,i*2+10,0x70);
-		print_hex (*pos,4,31,i*2+10,0x7f);
-		pos+=4; //?
+		print_hex ((unsigned int)*pos,4,31,i*2+10,0x7f);
+		pos++; //?
+		print_hex ((unsigned int)pos,8,1,i,0x7f);
 	}
 	print ("eflags",28,40,0x70);
-	print_hex(*pos,28,34,40,0x7f);
-	pos+=4;
+	print_hex(*pos,8,34,40,0x7f);
+	pos++;
+	print_hex ((unsigned int)pos,8,1,i,0x7f);
 	for (i=0;i<4;i++) {
 		print (cosasAimprimir[i+15],40,i*2+10,0x70);
-		print_hex (*pos,8,44,i*2+10,0x7f);
-		pos+=4;
+		print_hex ((unsigned int)*pos,8,44,i*2+10,0x7f);
+		pos++;
+		print_hex ((unsigned int)pos,8,1,i+15,0x7f);
 	}
 	print ("stack",40,27,0x70);
-	for (i=0;pos<=base;i++) {
-		print_hex(*pos,8,40,i+30,0x7f);
-		pos+=4;
+	for (i=0;i<5;i++) {
+		print_hex((unsigned int)*pos,8,40,i+30,0x7f);
+		pos++;
+		print_hex ((unsigned int)pos,8,1,i+30,0x7f);
 	}
 	breakpoint();
 }
