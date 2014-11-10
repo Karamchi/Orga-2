@@ -168,7 +168,6 @@ Reloj:
 	cmp ax, [selector]
 	je .end
 		mov [selector], ax
-		;xchg bx, bx
 		jmp far [offset]
 		jmp .end
 		

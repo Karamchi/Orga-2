@@ -75,7 +75,6 @@ void mmu_inicializar_dir_kernel() {
 
 int pedir_pagina(){
 	contador_pags++;
-	//breakpoint();
 	return (0x100000+(contador_pags-1)*0x1000);
 }
 
@@ -133,7 +132,6 @@ unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 		};
 		
 	}
-	//breakpoint();
 	// copiamos el codigo
 	int* src;
 	if (jugador==0) {
@@ -149,7 +147,7 @@ unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	//el mapa tiene 44x78 posiciones
 	int* dst = (int*) pos_mapa(pos,2+jugador*75); // A va a col 2 y B a col 77
 	
-	if (rtr() != 0x70) mmu_mapear_pagina((unsigned int) dst, rcr3(), (unsigned int) dst);
+	/*if (rtr() != 0x70)*/ mmu_mapear_pagina((unsigned int) dst, rcr3(), (unsigned int) dst);
 	for (i=0; i<1024; i++) {
 		dst[i]=src[i];
 	}

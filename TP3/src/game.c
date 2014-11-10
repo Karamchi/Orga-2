@@ -33,13 +33,10 @@ void game_lanzar_zombi(unsigned int jugador) {
 	z.jugador=jugador;
 	z.vivo=1;
 	int i;
-	//int cr3;
-	//breakpoint();
 	if (jugador==0) {
 		if (jugA.zqq>0 && jugA.zep<8) {
 			jugA.zqq--;
 			jugA.zep++;
-			//cr3=mmu_inicializar_dir_zombi(jugA.tzl,0,jugA.pos);
 			z.tipo=jugA.tzl;
 			z.pos_i=jugA.pos;
 			z.pos_j=2;
@@ -56,7 +53,6 @@ void game_lanzar_zombi(unsigned int jugador) {
 		if (jugB.zqq>0 && jugB.zep<8) {
 			jugB.zqq--;
 			jugB.zep++;
-			//cr3=mmu_inicializar_dir_zombi(jugB.tzl,1,jugB.pos);
 			z.tipo=jugB.tzl;
 			z.pos_i=jugB.pos;
 			z.pos_j=77;
@@ -66,7 +62,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 					break;
 				}
 			}
-						tss_completar_libre(&(tss_zombisB[i]),jugB.tzl,1,jugB.pos);
+			tss_completar_libre(&(tss_zombisB[i]),jugB.tzl,1,jugB.pos);
 			printZombi(z);
 		}
 	} 
@@ -83,7 +79,6 @@ void game_move_current_zombi(direccion dir) {
 	} else {
 		z = &tareasB[(int)anteriorB];
 	}
-	//breakpoint();
 	print("X", z->pos_j, z->pos_i, C_FG_WHITE+C_BG_GREEN);
 	
 	int* src;
@@ -118,7 +113,6 @@ void game_move_current_zombi(direccion dir) {
 		mmu_mapear_paginas_zombi(cr3, z->jugador, z->pos_j, z->pos_i);
 		printZombi(*z);
 		int i;
-		//breakpoint();
 		for (i=0; i<1024; i++) dst[i]=src[i]; //copio el codigo
 	}
 	
