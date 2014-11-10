@@ -172,15 +172,15 @@ void game_print_debug(int stackpointer) {
 	}
 	//al llamar queda:
 
-	//		
+	//basura
 	//dir ret <-esp
 	//esp
-	//eax (ultima cosa pusheada por la fn anterior, lo ve como parámetro)
+	//eax (ultima cosa pusheada por la fn anterior) <-pos
 	//b,c,d,si,di
 	//rbp (viejo, dice donde empieza la pila de la funcion que llama)
 
 
-	int* pos=(int*)stackpointer - 4;
+	int* pos=(int*)stackpointer + 4;
 	int* base=(int*)(*(pos+6*4));
 	char* cosasAimprimir[]={"eax","ebx","ecx","edx","esi","edi","ebp","esp","eip","cs","ds","es","fs","gs","ss","cr0","cr2","cr3","cr4"};
 	
@@ -195,7 +195,8 @@ void game_print_debug(int stackpointer) {
 		pos+=4; //?
 	}
 	print ("eflags",28,40,0x70);
-	//print_hex(*pos,28,34,40,0x7f);
+	print_hex(*pos,28,34,40,0x7f);
+	pos+=4;
 	for (i=0;i<4;i++) {
 		print (cosasAimprimir[i+15],40,i*2+10,0x70);
 		print_hex (*pos,8,44,i*2+10,0x7f);
