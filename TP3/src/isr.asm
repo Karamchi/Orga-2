@@ -50,6 +50,8 @@ _isr%1:
     
     mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
+    cmp byte [mostrando], 1
+    je SoloY
     cmp eax, 32
     je Reloj
     cmp eax, 33
@@ -71,6 +73,7 @@ _isr%1:
 
         cmp byte [debug], 1
         jne .sinDebug
+        mov byte [mostrando], 1
         
         	popad						;recupero originales
         	pushad						; pero no los piso
@@ -107,6 +110,11 @@ _isr%1:
             push esp
             xchg bx, bx
             call game_print_debug
+            sti
+            .loop:
+            	cmp byte [mostrando], 1
+            	je .loop
+            cli
             pop esp
             pop eax
             pop ebx
@@ -123,6 +131,7 @@ _isr%1:
             pop fs
             pop gs
             pop ss
+            popfd
             pop eax
             mov cr0, eax
             pop eax
@@ -131,9 +140,10 @@ _isr%1:
             mov cr3, eax
             pop ax
             mov cr4, eax
-            popfd
             
 		.sinDebug:
+		;xchg bx, bx
+		mov word [selector], 0x70
     	jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
     	popad
     .fin:
@@ -180,15 +190,17 @@ ISR 102
 ;; -------------------------------------------------------------------------- ;;
 Reloj:
 	call fin_intr_pic1
-	call proximo_reloj
-	call sched_proximo_indice
-	;shl ax, 3
-	cmp ax, [selector]
+	cmp byte [mostrando],1
 	je .end
-		mov [selector], ax
-		jmp far [offset]
-        call pintar_relojes
-		jmp .end
+		call proximo_reloj
+		call sched_proximo_indice
+		;shl ax, 3
+		cmp ax, [selector]
+		je .end
+			mov [selector], ax
+			jmp far [offset]
+		    call pintar_relojes
+			jmp .end
 		
 	.end:
 	;popfd
@@ -314,7 +326,18 @@ Teclado:
 	popad
 	;popfd
 	iret
-
+	
+SoloY:
+    xchg bx, bx
+	cmp eax, 33
+    jne .fin
+	call fin_intr_pic1
+    in al, 0x60
+    cmp al, 0x15
+    je Teclado.imprimirY
+    .fin: 
+	popad
+	iret
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;

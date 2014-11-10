@@ -126,7 +126,6 @@ void printZombi(info_zombi z){
 
 void game_print_debug(int stackpointer) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
-	print_hex ((unsigned int)stackpointer,8,1,40,0x7f);
 	int x=25;
 	int y=7;
 	int width=29;
@@ -134,6 +133,11 @@ void game_print_debug(int stackpointer) {
 
 	int i;
 	int j;
+	//guardar pantalla
+	ca* fin=(ca*) 0xb9fa0;
+	for (i=0;i<4000;i++) {
+		fin[i]=p[i/80][i%80];
+	}
 	for (i = x; i < x + width; i++) {
 		p[y][i] = (ca){' ',0};
 		p[y+height-1][i] = (ca){' ',0};
@@ -145,11 +149,6 @@ void game_print_debug(int stackpointer) {
 	}
 	for (i = x+1; i < x + width-1; i++) {
 		p[y+1][i] = (ca){' ',0x10};
-	}
-	//guardar pantalla
-	ca* fin=(ca*) 0xb9fa0;
-	for (i=0;i<4000;i++) {
-		fin[i]=p[i/50][i%50];
 	}
 
 	if (anteriorjug==0) {
@@ -189,39 +188,34 @@ void game_print_debug(int stackpointer) {
 		print (cosasAimprimir[i],27,i*2+10,0x70);
 		print_hex (*pos,8,31,i*2+10,0x7f);
 		pos++;
-		print_hex ((unsigned int)pos,8,1,i,0x7f);
 	}
 	for (i=9;i<15;i++) {
 		print (cosasAimprimir[i],28,i*2+10,0x70);
 		print_hex ((unsigned int)*pos,4,31,i*2+10,0x7f);
 		pos++; //?
-		print_hex ((unsigned int)pos,8,1,i,0x7f);
 	}
 	print ("eflags",28,40,0x70);
 	print_hex(*pos,8,34,40,0x7f);
 	pos++;
-	print_hex ((unsigned int)pos,8,1,i,0x7f);
 	for (i=0;i<4;i++) {
 		print (cosasAimprimir[i+15],40,i*2+10,0x70);
 		print_hex ((unsigned int)*pos,8,44,i*2+10,0x7f);
 		pos++;
-		print_hex ((unsigned int)pos,8,1,i+15,0x7f);
 	}
 	print ("stack",40,27,0x70);
 	for (i=0;i<5;i++) {
 		print_hex((unsigned int)*pos,8,40,i+30,0x7f);
 		pos++;
-		print_hex ((unsigned int)pos,8,1,i+30,0x7f);
 	}
-	breakpoint();
+	//breakpoint();
 }
 
 void recuperarPantalla(){
 	int i;
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
-	ca* fin=(ca*) 0xb8fa0;
+	ca* fin=(ca*) 0xb9fa0;
 	for (i=0;i<4000;i++) {
-		p[i/50][i%50]=fin[i];
+		p[i/80][i%80]=fin[i];
 	}
 }
 
