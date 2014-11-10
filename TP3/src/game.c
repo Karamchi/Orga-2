@@ -228,7 +228,7 @@ void game_chau_zombi() {
 		tareasB[(int)anteriorB].vivo=0;
 		jugA.pts++;
 		jugB.zep--;
-		printZombi(tareasA[(int)anteriorA]);
+		printZombi(tareasB[(int)anteriorB]);
 	}
 	pintar_buffer_video_posta(jugA, jugB);
 }
