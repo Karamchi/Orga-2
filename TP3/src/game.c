@@ -90,13 +90,13 @@ void game_move_current_zombi(direccion dir) {
 	mmu_unmapear_paginas_zombi(cr3, z->jugador, z->pos_j, z->pos_i);
 	switch (dir) {
 		case (IZQ):	{
-			z->pos_i = (z->pos_i - 2*anteriorjug) % 44 + 1; 
+			z->pos_i = (z->pos_i + 2*(anteriorjug-1)) % 44 + 1; 
 			src = (int*)0x8004000; 
 			break;
 		}
 		case (DER): {
-			z->pos_i = (z->pos_i + 2*(anteriorjug-1)) % 44 + 1; 
-			src = (int*)0x80050000; 
+			z->pos_i = (z->pos_i - 2*anteriorjug) % 44 + 1; 
+			src = (int*)0x8005000; 
 			break;
 		}
 		case (ADE):	{

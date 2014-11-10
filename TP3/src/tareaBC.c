@@ -11,6 +11,7 @@
 
 void task() {
     /* Tarea */
+  while(1) {
     int i;
     for(i=0;i<10;i++)
     syscall_mover(ADE);
@@ -22,6 +23,6 @@ void task() {
     syscall_mover(IZQ);
     for(i=0;i<500;i++)
     syscall_mover(ATR);
-    
+  }  
   while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
 }
