@@ -46,6 +46,7 @@ _isr%1:
 		add esp, 4
 		%endif 
     pushad
+    ;pushfd
     
     mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
@@ -99,7 +100,10 @@ _isr%1:
             push ecx
             push ebx
             push eax
+            push esp
+            xchg bx, bx
             call game_print_debug
+            pop esp
             pop eax
             pop ebx
             pop ecx
@@ -114,11 +118,21 @@ _isr%1:
             pop es
             pop fs
             pop gs
+            pop eax
+            mov cr0, eax
+            pop eax
+            mov cr2, eax
+            pop eax
+            mov cr3, eax
+            pop ax
+            mov cr4, eax
             popfd
+            
 		.sinDebug:
     		jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
     .fin:
     popad
+    ;popfd
     iret
 
 %endmacro
@@ -172,6 +186,7 @@ Reloj:
 		jmp .end
 		
 	.end:
+	;popfd
 	popad
 iret
 ;;
@@ -292,6 +307,7 @@ Teclado:
 	imprimir_texto_mp ebx, 2, 0x0f, 0, 78	
     .finposta:
 	popad
+	;popfd
 	iret
 
 ;;
@@ -305,6 +321,7 @@ sys66:	;ecx numero de la interrupcion
 	jmp 0x70:0
 	pop ecx
 	popad
+	;popfd
 	;mov eax, 0x42	;Esto es del ejercicio de Interrupciones
 	iret
 	

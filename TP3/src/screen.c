@@ -124,7 +124,7 @@ void printZombi(info_zombi z){
 	}	
 }
 
-void game_print_debug(int eax) {
+void game_print_debug(int stackpointer) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	int x=25;
 	int y=7;
@@ -172,15 +172,15 @@ void game_print_debug(int eax) {
 	}
 	//al llamar queda:
 
-	//		<-esp
-	//dir ret
+	//		
+	//dir ret <-esp
+	//esp
 	//eax (ultima cosa pusheada por la fn anterior, lo ve como parámetro)
 	//b,c,d,si,di
 	//rbp (viejo, dice donde empieza la pila de la funcion que llama)
 
-	;breakpoint();
 
-	int* pos=&eax;
+	int* pos=(int*)stackpointer - 4;
 	int* base=(int*)(*(pos+6*4));
 	char* cosasAimprimir[]={"eax","ebx","ecx","edx","esi","edi","ebp","esp","eip","cs","ds","es","fs","gs","ss","cr0","cr2","cr3","cr4"};
 	
@@ -206,6 +206,7 @@ void game_print_debug(int eax) {
 		print_hex(*pos,8,40,i+30,0x7f);
 		pos+=4;
 	}
+	breakpoint();
 }
 
 void recuperarPantalla(){
