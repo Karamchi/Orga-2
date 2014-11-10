@@ -110,11 +110,6 @@ _isr%1:
             push esp
             xchg bx, bx
             call game_print_debug
-            sti
-            .loop:
-            	cmp byte [mostrando], 1
-            	je .loop
-            cli
             pop esp
             pop eax
             pop ebx
@@ -328,7 +323,6 @@ Teclado:
 	iret
 	
 SoloY:
-    xchg bx, bx
 	cmp eax, 33
     jne .fin
 	call fin_intr_pic1
