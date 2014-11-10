@@ -61,55 +61,64 @@ _isr%1:
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     ;xchg bx, bx
     
-    push eax	; si no estoy en la idle, mato al zombi
-    str ax
-		cmp ax, 0x70
-		je .estoy_en_idle
+    push eax	
+    ;str ax
+	cmp ax, 0x70 ; si no estoy en la idle, mato al zombi
+	je .fin
+        pushad                                          ; quiero guardar todo para imprimirlo
 		call game_chau_zombi
-    jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
+        popad
+        jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
 		pop eax
-		.estoy_en_idle:
-    cmp byte [debug], 1
-    jne .fin
-        ;push cr4
-        ;push cr3
-        ;push cr2
-        ;push cr0
-        pushfd
-        push gs
-        push fs
-        push es
-        push ds
-        push cs
-        call .picaron
-        .picaron:
-        push esp
-        push ebp
-        push edi
-        push esi
-        push edx
-        push ecx
-        push ebx
-        push eax
-        call game_print_debug
-        pop eax
-        pop ebx
-        pop ecx
-        pop edx
-        pop esi
-        pop edi
-        pop ebp
-        pop esp
-        ret
-        pop cs
-        pop ds
-        pop es
-        pop fs
-        pop gs
-        popfd
 
+        cmp byte [debug], 1
+        jne .fin
+
+            mov [esp-16], eax        ;push manual
+            mov eax, cr4
+            push eax
+            mov eax, cr3
+            push eax
+            mov eax, cr2
+            push eax
+            mov eax, cr0
+            push eax
+            sub esp, 4              ;Trucho
+            pop eax
+            
+            pushfd
+            push gs
+            push fs
+            push es
+            push ds
+            push cs
+            call .picaron
+            .picaron:
+            push esp
+            push ebp
+            push edi
+            push esi
+            push edx
+            push ecx
+            push ebx
+            push eax
+            call game_print_debug
+            pop eax
+            pop ebx
+            pop ecx
+            pop edx
+            pop esi
+            pop edi
+            pop ebp
+            pop esp
+            ret
+            pop cs
+            pop ds
+            pop es
+            pop fs
+            pop gs
+            popfd
     .fin:
-    ;jmp
     popad
     iret
 
