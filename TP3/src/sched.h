@@ -14,8 +14,8 @@ typedef struct info_zombi_struct {
 	unsigned char tipo;
 	unsigned char pos_i;
 	unsigned char pos_j;
-	unsigned char vivo:1;
-	unsigned char jugador:1;
+	unsigned char vivo;
+	unsigned char jugador;
 	
 } __attribute__((__packed__)) info_zombi; 
 

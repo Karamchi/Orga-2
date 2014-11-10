@@ -136,18 +136,24 @@ unsigned int mmu_inicializar_dir_zombi(char tipo, char jugador, int pos){
 	//breakpoint();
 	// copiamos el codigo
 	int* src;
-	if (tipo=='G') src = (int*) 0x10000 + jugador*0x3000;
-	if (tipo=='M') src = (int*) 0x11000 + jugador*0x3000;
-	if (tipo=='C') src = (int*) 0x12000 + jugador*0x3000; //el jugador B esta 0x3000 mas adelante
+	if (jugador==0) {
+		if (tipo=='G') src = (int*) 0x10000;
+		if (tipo=='M') src = (int*) 0x11000;
+		if (tipo=='C') src = (int*) 0x12000;
+	}else{
+		if (tipo=='G') src = (int*) 0x13000;
+		if (tipo=='M') src = (int*) 0x14000;
+		if (tipo=='C') src = (int*) 0x15000;
+	}
 	
 	//el mapa tiene 44x78 posiciones
 	int* dst = (int*) pos_mapa(pos,2+jugador*75); // A va a col 2 y B a col 77
 	
-	mmu_mapear_pagina((unsigned int) dst, rcr3(), (unsigned int) dst);
+	if (rtr() != 0x70) mmu_mapear_pagina((unsigned int) dst, rcr3(), (unsigned int) dst);
 	for (i=0; i<1024; i++) {
 		dst[i]=src[i];
 	}
-	//mmu_unmapear_pagina((unsigned int) dst, rcr3());
+	if (rtr() != 0x70) mmu_unmapear_pagina((unsigned int) dst, rcr3());
 	//mapeamos las paginas:
 	/*  Jug A:         Jug B:
 	    8 6 4   		3 5 9

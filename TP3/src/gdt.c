@@ -104,7 +104,7 @@ gdt_entry gdt[GDT_COUNT] = {
         (unsigned char)     0x01,           /* avl          */
         (unsigned char)     0x00,           /* l            */
         (unsigned char)     0x01,           /* db           */
-        (unsigned char)     0x01,           /* g            */
+        (unsigned char)     0x00,           /* g            */
         (unsigned char)     0x00,           /* base[31:24]  */
     },
 

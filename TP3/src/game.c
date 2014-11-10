@@ -76,6 +76,53 @@ void game_lanzar_zombi(unsigned int jugador) {
 }
 void game_move_current_zombi(direccion dir) {
 	unsigned int cr3 = rcr3() ;	
+	
+	info_zombi* z;
+	if (anteriorjug == 0) {
+		z = &tareasA[(int)anteriorA];
+	} else {
+		z = &tareasB[(int)anteriorB];
+	}
+	//breakpoint();
+	print("X", z->pos_j, z->pos_i, C_FG_WHITE+C_BG_GREEN);
+	
+	int* src;
+	mmu_unmapear_paginas_zombi(cr3, z->jugador, z->pos_j, z->pos_i);
+	switch (dir) {
+		case (IZQ):	{
+			z->pos_i = (z->pos_i - 2*anteriorjug) % 44 + 1; 
+			src = (int*)0x8004000; 
+			break;
+		}
+		case (DER): {
+			z->pos_i = (z->pos_i + 2*(anteriorjug-1)) % 44 + 1; 
+			src = (int*)0x80050000; 
+			break;
+		}
+		case (ADE):	{
+			z->pos_j = z->pos_j - 2*anteriorjug + 1; 
+			src = (int*)0x8006000;
+			break;
+		}
+		case (ATR):	{
+			z->pos_j = z->pos_j + 2*anteriorjug - 1; 
+			src = (int*)0x8001000;
+			break;
+		}
+	}
+	int* dst = (int*)0x8000000;
+	
+	if (z->pos_j == 1 || z->pos_j==78) {
+		game_chau_zombi();
+	} else {
+		mmu_mapear_paginas_zombi(cr3, z->jugador, z->pos_j, z->pos_i);
+		printZombi(*z);
+		int i;
+		//breakpoint();
+		for (i=0; i<1024; i++) dst[i]=src[i]; //copio el codigo
+	}
+	
+	/*
 	switch (dir) {
 		case (IZQ):
 			if (anteriorjug == 0){		//Jugador actual A
@@ -149,6 +196,7 @@ void game_move_current_zombi(direccion dir) {
 				printZombi(tareasB[(int)anteriorB]);
 			} 
 	}
+	*/
 	pintar_buffer_video_posta(jugA, jugB);
 }
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){

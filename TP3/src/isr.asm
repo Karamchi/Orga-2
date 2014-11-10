@@ -302,7 +302,8 @@ sys66:	;ecx numero de la interrupcion
 	call fin_intr_pic1
 	push ecx
 	call game_move_current_zombi
-;jmp idle?
+	mov word [selector], 0x70
+	jmp 0x70:0
 	pop ecx
 	popad
 	;mov eax, 0x42	;Esto es del ejercicio de Interrupciones
