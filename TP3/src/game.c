@@ -66,7 +66,7 @@ void game_lanzar_zombi(unsigned int jugador) {
 		}
 	} 
 	
-	pintar_buffer_video_posta(jugA, jugB);
+	pintar_puntajes();
 	
 }
 void game_move_current_zombi(direccion dir) {
@@ -119,7 +119,7 @@ void game_move_current_zombi(direccion dir) {
 		int i;
 		for (i=0; i<1024; i++) dst[i]=src[i]; //copio el codigo
 	}
- 	pintar_buffer_video_posta(jugA, jugB);
+ 	pintar_puntajes();
 }
 
 void game_cambiar_tipo_zombi(unsigned int jugador, unsigned int value){
@@ -152,7 +152,7 @@ void game_chau_zombi() {
 		jugB.zep--;
 		printZombi(tareasB[(int)anteriorB]);
 	}
-	pintar_buffer_video_posta();
+	pintar_puntajes();
 }
 
 void game_terminar() {

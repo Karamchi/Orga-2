@@ -12,13 +12,12 @@
 
 void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 		int cr3 = mmu_inicializar_dir_zombi(tipo, jugador, pos);
-		//breakpoint();
 		t->cr3 = cr3;
-		//jugador -= 65; // jugador A: 0, jugador B: 1 
-		t->eip = 0x8000000;//pos_mapa(2+jugador*75, pos);
+		// jugador A: 0, jugador B: 1 
+		t->eip = 0x8000000;
 		t->eflags=0x202;
-		t->esp = 0x8001000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
-		t->ebp = 0x8001000; //CONFUSOOO!! PREGUNTAR (Tiene q ser la base de la tarea o pedir una nueva pagina?)
+		t->esp = 0x8001000;
+		t->ebp = 0x8001000;
 		short seg_dat = 0x5B;
 		short seg_cod = 0x53;
 		t->es = seg_dat;
@@ -33,7 +32,7 @@ void tss_completar_libre(tss *t, char tipo, char jugador, int pos){
 
 }
 
-void tss_inicializar() {
+void tss_inicializar() { //bases
 	gdt[GDT_TAREA_INICIAL].base_0_15 = (int)&tss_inicial & 0xFFFF;
 	gdt[GDT_TAREA_INICIAL].base_23_16 = ((int)&tss_inicial >> 16) & 0xFF;
 	gdt[GDT_TAREA_INICIAL].base_31_24 = (int)&tss_inicial >> 24;

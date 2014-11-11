@@ -46,12 +46,12 @@ _isr%1:
 		%if %1=8 || %1=10 || %1=11 || %1=12 || %1=13 || %1=14 || %1=17
 		add esp, 4
 		%endif 
-    cmp byte [mostrando], 1
+    cmp byte [mostrando], 1			; Si estoy mostrando la información de debug, dejo solo la interrupción de la y
     je SoloY
     pushad
     ;pushfd
-    mov ecx, eax	; guardo para el sys66
-    mov eax, %1		; numero de interrupcion
+    mov ecx, eax					; guardo para el sys66
+    mov eax, %1						; numero de interrupcion
     cmp eax, 32
     je Reloj
     cmp eax, 33
@@ -70,10 +70,10 @@ _isr%1:
         jne .sinDebug
 	        mov byte [mostrando], 1
         
-        	popad						;recupero originales
-        	pushad						; pero no los piso
+        	popad					;recupero originales
+        	pushad					; pero no los piso
         
-            mov [esp-20], eax        ;push manual
+            mov [esp-20], eax       ;push manual
             mov eax, cr4
             push eax
             mov eax, cr3
@@ -82,7 +82,7 @@ _isr%1:
             push eax
             mov eax, cr0
             push eax
-            sub esp, 4              ;Trucho
+            sub esp, 4
             pop eax
             
             pushfd
@@ -107,7 +107,7 @@ _isr%1:
             call game_print_debug
 
 		.sinDebug:
-		cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
+		cmp byte [selector], 0x70 ; si no estoy en la idle, salto a idle
 		je .fin
 		mov word [selector], 0x70
     	jmp 0x70:0
@@ -316,7 +316,7 @@ SoloY:
 sys66:	;ecx numero de la interrupcion
 	call fin_intr_pic1
 	push ecx
-	mov dword[contador], 0
+	mov dword[contador], 0			;reseteo timer
 	call game_move_current_zombi
 	mov word [selector], 0x70
 	jmp 0x70:0

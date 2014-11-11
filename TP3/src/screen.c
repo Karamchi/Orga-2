@@ -43,7 +43,6 @@ void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, un
 
 void pintar_buffer_video() {
 	/*Esta funcion pinta el buffer de video que esta en la posicion 0xb8000 (80x50) con la parte inferior y una línea negra arriba 
-	va a haber que modificarla para adaptarse a cualquier entrada de datos
 	*/
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	int i;
@@ -76,7 +75,7 @@ void pintar_buffer_video() {
 	p[25][0]=(ca){'M',0x4f};  //pos y tipo
 	p[25][79]=(ca){'M',0x1f};
 
-	for (i=0; i<8; i++) { //relojes
+	for (i=0; i<8; i++) { 	  //relojes
 		p[48][4+i*2] = (ca){'X',0x04};
 		p[48][60+i*2] = (ca){'X',0x01};
 	}
@@ -85,13 +84,14 @@ void pintar_buffer_video() {
 void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char color) {
 	ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 	unsigned char d=a/10;
-	unsigned char u=a%10;	
+	unsigned char u=a%10;
+	if (d==0) {d=' '-'0';}
 		p[pos_i][pos_j] = (ca){d+'0',color};	
 		p[pos_i][pos_j+1] = (ca){u+'0',color};
 }
 
 
-void pintar_buffer_video_posta() {
+void pintar_puntajes() {
 	printint(jugA.zqq,47,31,0x4f);
 	printint(jugB.zqq,47,47,0x1f);
 	printint(jugA.pts,47,36,0x4f);
