@@ -5,7 +5,7 @@
 ; definicion de rutinas de atencion de interrupciones
 
 %include "imprimir.mac"
-%define TIEMPO_FIN 500
+%define TIEMPO_FIN 1023
 BITS 32
 
 sched_tarea_offset:     dd 0x00

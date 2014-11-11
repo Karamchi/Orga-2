@@ -1,0 +1,193 @@
+\documentclass[a4paper]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{charter}   % tipografia
+\usepackage{graphicx}
+\usepackage{courier}
+%\usepackage{makeidx}
+\usepackage{paralist} %itemize inline
+\usepackage{caption}
+%\usepackage{float}
+%\usepackage{amsmath, amsthm, amssymb}
+%\usepackage{amsfonts}
+%\usepackage{sectsty}
+%\usepackage{charter}
+%\usepackage{wrapfig}
+%\usepackage{listings}
+%\lstset{language=C}
+\usepackage{booktabs}
+
+\input{codesnippet}
+\input{page.layout}
+% \setcounter{secnumdepth}{2}
+\usepackage{underscore}
+\usepackage{caratula}
+\usepackage{url}
+
+% ******************************************************** %
+%              TEMPLATE DE INFORME ORGA2 v0.1              %
+% ******************************************************** %
+% ******************************************************** %
+%                                                          %
+% ALGUNOS PAQUETES REQUERIDOS (EN UBUNTU):                 %
+% ========================================
+%                                                          %
+% texlive-latex-base                                       %
+% texlive-latex-recommended                                %
+% texlive-fonts-recommended                                %
+% texlive-latex-extra?                                     %
+% texlive-lang-spanish (en ubuntu 13.10)                   %
+% ******************************************************** %
+
+
+
+\begin{document}
+
+
+\thispagestyle{empty}
+\materia{Organización del Computador II}
+\submateria{Segundo Cuatrimestre de 2014}
+\titulo{Trabajo Práctico III}
+\subtitulo{System Programming-Zombi Defense}
+\integrante{Christian Chibana}{586/13}{christian.chiba93@gmail.com}
+\integrante{Javier Minces Müller}{231/13}{javijavi1994@hotmail.com}
+\integrante{Nicolás Roulet}{587/13}{nicoroulet@gmail.com}
+
+\maketitle
+\newpage
+
+\thispagestyle{empty}
+\vfill
+\begin{abstract}
+
+\end{abstract}
+
+\thispagestyle{empty}
+\vspace{3cm}
+\tableofcontents
+\newpage
+
+
+%\normalsize
+\newpage
+
+
+
+\section{Introducción}
+El objetivo del siguiente trabajo práctico es explorar los conceptos funtamentales de la programación de sistemas, desarrolando para tal fin un sistema con capacidad de manejo de múltiples tareas de manera dinámica y una interfaz de comunicación con el usuario. 
+
+La base del sistema consiste en un kernel provisto de estructuras de datos que pe permiten administrar memoria con diferentes niveles de privilegio, capturar eventuales errores en tiempo de ejecución a fin de actuar consecuentemente y recibir interrupciones de dispositivos externos para permitir la entrada de datos. A su vez, está diseñado para poder conmutar tareas a fin de simular una ejecución simultáne.
+
+Estas herramientas permiten implementar un juego de dos jugadores donde cada uno tiene a su disposición zombis (tareas) con los que combatir a su contrincante.
+
+\includegraphics{imagenes/Includes.png}
+
+%para que?
+%mmm no sé pero no queda mal
+\section{Global Descriptor Table (GDT)}
+La Global Descriptor Table (GDT) es una estructura de datos que permite almacenar descriptores de los diferentes segmentos del sistema. Contiene por convención un descriptor nulo en la primer entrada. En este caso particular, las siguientes 7 entradas se consideran reservadas, por lo que los descriptores utilizados comienzan a partir de la posición 8.
+
+La administración de memoria se basa en cuatro segmentos principales:
+\begin{itemize}
+\item Segmento de código de nivel 0: será utilizado para ejecutar las instrucciones del kernel y demás rutinas que requieran nivel de supervisor.
+\item Segmento de datos de nivel 0: permite almacenar los datos y las diferentes pilas de nivel de supervisor utilizadas por el kernel y las interrupciones, así como la memoria de video y las páginas adicionales para rutinas de máximo privilegio.
+\item Segmento de código de nivel 3: es utilizado para ejecutar el código de las tareas, que tienen nivel de privilegio 3.
+\item Segmento de datos de nivel 3: contiene las pilas de nivel 3 de las tareas.
+\end{itemize}
+
+Estos cuatro segmentos abarcan la misma área de memoria con base en la posicion \texttt{0x00000000}, que abarca los primeros 623MB de memoria. A su vez, utilizamos un descriptor para el área de pantalla con la base establecida en la posición \texttt{0xB8000} que permite direccionar a los píxeles de la pantalla utilizando su $offset$ relativo al principio de la misma.
+
+Por otro lado, la GDT contiene un descriptor de TSS para cada tarea zombi (8 para cada jugador) con DPL=3, uno para la \texttt{tarea inicial} y otro para la \texttt{idle}, la tarea de nivel de kernel encargada de ocupar los espacios de tiempo en los que no haya otras tareas ejecutándose. La base de éstos segmentos será inicializada posteriormente al declararse las TSS.
+
+%Usamos a partir del indice 8 ya que los 8 primeros indices estan restringidas por el TP. En la GDT usamos 32 descriptores (contando los 8 reservados), 16 para los zombis, 7 para los ejercicios de por ahí, y los 8 primeros reservados.
+%Esta tabla permite dividir la memoria en segmentos para que nadie entre donde no lo llaman
+
+\section{Interruptor Descriptor Table (IDT)}
+El Interruptos Descriptor Table (IDT) es una estructura de datos que permite almacenar descriptores de las interrupciones internas, de hardware, y de software. Esta tabla es necesaria para atender las interrupciones en modo protegido.
+
+Para inicializar la IDT realizamos una funcion que para cada tipo de interrupcion, generara el descriptor de la interrupcion y se lo asigne a su respectivo indice (el numero de interrupción) dentro de la IDT. 
+
+Luego en el archivo isr.asm realizamos la rutina de atención para cada interrupcion, imprimiendo el tipo de excepcion para aquellas generadas por el procesador, y para las interrupciones del teclado, reloj, y del sistema, se hizo lo correspondiente a lo pedido en el enunciado (se hablara más sobre este tipo de interrupciones en la seccion de Interrupciones Externas).%Malisimo, explicar mejor esto! -- que agitas? JAJAJA FUI YO EL Q LO PUSO! Es una critica constructiva para mi.. jaja je me fui a dormir chau OKAAAAAAAAA.
+
+El descriptor de las interrupciones desde el 0 al 19 tienen el mismo selector de segmento y atributos, ya que son todas excepciones del procesador. El selector elegido para estas interrupciones es el de código de nivel 0 (shifteado 3 bits (0x40)), y sus atibutos son (0x8E00): $Present$ 1, $DPL$ de nivel 0, $D$ en 1 ya que trabajamos en 32 bits, y de $tipo$ Interrupt Gate (110 b).%No hablo del 32 33 y 102 porq son las EXTERNAS!.
+
+%Faltaría poner q es lo q hacemos en la rutina de atención. Yo no entiendo el "if" del principio, mñn lo veo!. Eso lo que hace es popear el código de error que generan las excepciones
+
+
+\section{Memory Management Unit (MMU)}
+\subsection {Kernel}
+El kernel debe poder acceder a cada posición de memoria propia, del mapa, y del área libre con nivel de privilegio 0 mediante identity mapping. En total, 4 MB de memoria. Para esto, necesita 4 tablas de páginas, cada una direccionando 1024 páginas de 1 KB. Para que fuera identity mapping, %casi que haría una cosa en excel y scrinshotearía, pero bueno, después explico bien con una tabla
+
+\subsection {Zombis}
+Las tareas/zombi necesitan dos tablas de páginas. La primera les permite acceder al primer megabyte de memoria, ocupado por el kernel, con nivel de privilegio 3. La segunda les permite ver las posiciones contiguas del mapa %img?
+Para esto creamos (todos nosotros) una función que mapea una página física a una virtual, que llama a una que dice cual es la dirección de una posición del mapa %+ la parte de copiar el código.
+
+\section{Interrupciones Externas} %Eternas?
+%Acá hicimos lo del teclado y lo del reloj
+%Y el reloj va a tener un timer, guiño
+%Y llama a la próxima int del scheduler
+%El teclado llama a las funciones de game.c
+%Vale la pena decir algo de la convención C?
+En este trabajo se implementaron dos rutinas de interrupción para interrupciones externas; una para el reloj y otra para el teclado.
+Las interrupciones de reloj se producen periódicamente. En cada interrupción, se llama a la función $sched$_$proximo$_$indice$ y se cambia de tarea.
+
+El teclado produce $scancodes$ al tocar y soltar una tecla, que se leen en \texttt{al} mediante la instrucción \texttt{in al, 0x60}
+Tocar las teclas activas produce una llamada a las funciones del archivo game: mover jugador, cambiar tipo, lanzar zombi, a las que se le pasan como parámetro el jugador y, en los primeros dos casos, la dirección. En el caso de la $Y$, se explica en la sección "Debugger".
+
+%Y la 0x66 dónde?
+%https://www.youtube.com/watch?v=sNjWpZmxDgg
+%woah
+
+\section{Task Segment Selector (TSS)}
+El procesador x86 en modo legacy 32 permite ejecutar cambios de tarea por hardware. Para esto es necesario conservar el contexto de las tareas en una estructura determinada. Esta estructura es un segmento de memoria especial, con los bits de tipo identíficandola como tal e indicando si esta ocupada.
+El procesador reconoce esta estructura al ejecutar un \texttt{jmp far selector:offset} y hace el cambio de tarea de la siguiente forma: 
+\begin{itemize}
+\item Preserva los registros de la tarea actual en el TSS correspondiente. El EIP guardado será el correspondiente a la instrucción siguiente al \texttt{jmp far}.
+\item Busca la nueva TSS utilizando el selector pasado como parámetro y carga los registros de la nueva tarea. Ahora está en condiciones de comenzar a ejecutar la nueva tarea.
+\end{itemize}
+Durante ésta operación, el procesador verifica que concuerden los niveles de privilegio de selectores y segmentos y que dichos segmentos sean válidos y se encuentren presentes. En caso contrario, saltará una excepción.
+
+En este trabajo se declararon 18 entradas en la GDT como tss: idle, inicial (decir para qué la inicial), y ocho para cada jugador, una para cada tarea.
+
+\section{Scheduler}
+El scheduler indica al procesador qué tarea ejecutar por cada interrupción de reloj. Para esto, usamos una estuctura $info$_$zombi$, con la información relevante de cada tarea, incluyendo un bit que indica si la tarea/zombi está viva %Perdón, no estoy en un momento de redactar bien
+Las tareas se encuentran en dos arrays de ocho posiciones cada uno, uno para cada jugador. Al llamar a la función (esa función), busca en el jugador contrario al último que jugó una tarea "viva", dejando su última tarea ejecutada para el final. La función devuelve su índice en la GDT, o el índice de la tarea IDLE si no hay tareas vivas %y seguir explicando mejor
+%+lo de que no se puede jumpear de una tarea a sí misma
+%+inicialización
+
+\section{Debugger} %Existe el verbo "pushear"?
+Para implementar el debugger creamos dos flags: uno indica si se está en modo debug, la otra, si se está mostrando la información de una tarea desalojada por una excepción.
+
+Tocar la Y cuando el flag de "mostrando" está en 0 cambia el valor del flag de "debug". Si este está en 1 y una tarea genera una excepción, se imprime su estado en pantalla.
+
+Para esto, creamos una función en c. Antes de llamar a esta función, se pushean todos los valores a imprimir. Luego, se pushea todo lo que debe imprimir y toma un únco parámetro: el valor de esp después de todos los $push$. A partir de este, puede ir recorriendo la pila (sumando hacia abajo) y devolviendo los valores que encuentra.
+\smallskip
+\begin{tabular}{r|c|l}
+esp $\rightarrow$ & dirección de retorno \\
+\cline{2-2}
+ & esp & (valor al momento llamar a la función)  \\
+\cline{2-2}
+ & eax &  \\
+ \cline{2-2}
+ & ...& \\
+ \cline{2-2}
+ & cr0 & (primer registro pusheado antes de llamar a la función) \\
+ \cline{2-2}
+ & stack & (stack antes de pushear valores)
+ \end{tabular}
+\smallskip 
+La pantalla se guarda completa a partir de la posición 0xB9..., y es recuperada al presionar la tecla Y. Mientras el debugger se está mostrando, las interrupciones entran en una rutina separada que solo habilita la que corresponde a tocar esta tecla.
+
+\section{Zombis OP} %Hay que informar eso?
+
+\section{Bibliografía}
+\begin{itemize}
+\item Apuntes de clase
+\item Manuales de Intel
+\end{itemize}
+
+\newpage 
+\section{Enunciado}
+\input{enunciado}
+
+\end{document}
