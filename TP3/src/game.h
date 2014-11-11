@@ -26,4 +26,6 @@ void game_chau_zombi();
 
 void cambiar_modo_debug();
 
+void game_terminar();
+
 #endif  /* !__GAME_H__ */

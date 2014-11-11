@@ -154,3 +154,40 @@ void game_chau_zombi() {
 	}
 	pintar_buffer_video_posta();
 }
+
+void game_terminar() {
+	int der=60;
+	int izq=15;
+	char color = 0x24;
+
+	
+	if (jugA.pts<jugB.pts) {
+		print(" Ganador  ", der, 25, color);
+		print(" Perdedor ", izq, 25, color);
+		
+		print("          ", der, 24, color);
+		print("          ", der, 26, color);
+	
+		print("          ", izq, 24, color);
+		print("          ", izq, 26, color);
+	} else if (jugA.pts>jugB.pts){
+		print(" Ganador  ", izq, 25, color);
+		print(" Perdedor ", der, 25, color);
+		
+		print("          ", der, 24, color);
+		print("          ", der, 26, color);
+	
+		print("          ", izq, 24, color);
+		print("          ", izq, 26, color);
+	} else {
+		print("  Empate  ", 35, 25, color);
+		
+		print("          ", 35, 24, color);
+		print("          ", 35, 26, color);
+	}
+	int i;int j; // espero un rato antes de hacer hlt
+	for (i=0; i<200000;i++) {
+		j+=i*10-0xFA50;
+	}
+	hlt();
+}

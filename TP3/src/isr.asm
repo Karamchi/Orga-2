@@ -5,7 +5,7 @@
 ; definicion de rutinas de atencion de interrupciones
 
 %include "imprimir.mac"
-
+%define TIEMPO_FIN 500
 BITS 32
 
 sched_tarea_offset:     dd 0x00
@@ -16,7 +16,7 @@ offset: dd 0
 selector: dw 0x70
 debug: db 0
 mostrando: db 0
-
+contador: dd 0
 ;; PIC
 extern fin_intr_pic1
 
@@ -30,6 +30,7 @@ extern recuperarPantalla
 extern game_print_debug
 extern cambiar_modo_debug
 extern pintar_relojes
+extern game_terminar
 
 ;; Sched
 extern sched_proximo_indice
@@ -155,6 +156,11 @@ ISR 102
 ;; -------------------------------------------------------------------------- ;;
 Reloj:
 	call fin_intr_pic1
+	add dword [contador], 1
+	cmp dword [contador], TIEMPO_FIN
+	jne .sigue_el_baile
+	call game_terminar
+	.sigue_el_baile:
 	call proximo_reloj
 	call sched_proximo_indice
 	;shl ax, 3
@@ -310,6 +316,7 @@ SoloY:
 sys66:	;ecx numero de la interrupcion
 	call fin_intr_pic1
 	push ecx
+	mov dword[contador], 0
 	call game_move_current_zombi
 	mov word [selector], 0x70
 	jmp 0x70:0

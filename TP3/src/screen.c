@@ -240,6 +240,4 @@ void pintar_relojes(){
 	}
 }
 
-void game_terminar(){
-	print ("Game Over", 40, 40, 0x0f);
-}
+
