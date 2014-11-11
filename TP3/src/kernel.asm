@@ -59,7 +59,6 @@ start:
 	call habilitar_A20    
 
     ; Cargar la GDT
-    ;xchg bx, bx
 	lgdt [GDT_DESC]
 
     ; Setear el bit PE del registro CR0
@@ -106,21 +105,21 @@ BITS 32
 
 	
 	;pinto bordes	
-	mov word [fs:0], 0x4020	;rojo, espacio
+	mov word [fs:0], 0x4020												;rojo, espacio
 	mov eax, 158
 
     .col_bordes:
-	mov dword [fs:eax], 0x40201020	;rojo, espacio, azul, espacio
+	mov dword [fs:eax], 0x40201020										;rojo, espacio, azul, espacio
 
 	add eax, 160
 	cmp eax, 7840	; 49*160
 	jl .col_bordes
-	mov word [fs:eax], 0x1020	;azul, espacio
+	mov word [fs:eax], 0x1020											;azul, espacio
 	
-	call pintar_buffer_video ;manzana, aca quizas haya que pasar parametros en algun momento
+	call pintar_buffer_video 											
 	;pop ebp
 
-	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 80-grupo_len
+	imprimir_texto_mp grupo_msg, grupo_len, 0x07, 0, 78-grupo_len		;lugar para las teclas
 	
 	
     ; Inicializar el manejador de memoria
@@ -130,16 +129,15 @@ BITS 32
 	call mmu_inicializar_dir_kernel
 	
     ; Cargar directorio de paginas
-	mov eax, 0x27000; page_directory HAY Q VER ESTO!!
+	mov eax, 0x27000
 	mov cr3, eax
 		
     ; Habilitar paginacion
 	 mov eax, cr0
-	 or eax, 0x80000000 ;habilitamos paginacion
+	 or eax, 0x80000000
 	 mov cr0, eax
 
     ; Inicializar tss
-	;xchg bx, bx
 	call tss_inicializar
 	
     ; Inicializar tss de la tarea Idle
@@ -159,7 +157,6 @@ BITS 32
     call habilitar_pic
 	
     ; Cargar tarea inicial
-    ;xchg bx, bx
     mov ax, 0x68
     ltr ax
 
@@ -174,8 +171,6 @@ BITS 32
     mov ebx, 0xFFFF
     mov ecx, 0xFFFF
     mov edx, 0xFFFF
-    ;xchg bx,bx
-    ;int 0x66
     jmp $
     jmp $
 

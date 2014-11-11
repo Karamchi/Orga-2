@@ -27,14 +27,13 @@ void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, un
 
 void pintar_buffer_video();
 
-void pintar_buffer_video_posta();
+void pintar_puntajes();
 
 void printint(int a, unsigned char pos_i, unsigned char pos_j, unsigned char color);
 
 void printZombi(info_zombi z);
 
 void game_print_debug(int eax);
-//void game_print_debug(int eax, int ebx, int ecx, int edx, int esi, int edi, int ebp, int esp, int eip, short cs, short ds, short es, short fs, short gs, short ss, int eflags);
 
 void recuperarPantalla();
 
