@@ -47,7 +47,6 @@ _isr%1:
 		%endif 
     pushad
     ;pushfd
-    
     mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
     cmp byte [mostrando], 1
@@ -64,13 +63,7 @@ _isr%1:
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
     
-	cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
-	je .fin
-        pushad                                          ; quiero guardar todo para imprimirlo
-		call game_chau_zombi
-        popad
-		;xchg bx, bx
-
+	
         cmp byte [debug], 1
         jne .sinDebug
         mov byte [mostrando], 1
@@ -108,8 +101,9 @@ _isr%1:
             push ebx
             push eax
             push esp
-            xchg bx, bx
+
             call game_print_debug
+
             pop esp
             pop eax
             pop ebx
@@ -118,14 +112,21 @@ _isr%1:
             pop esi
             pop edi
             pop ebp
-            pop esp
-            ret
-            pop cs
-            pop ds
-            pop es
-            pop fs
-            pop gs
-            pop ss
+            add esp, 4
+            add esp, 4
+            ;ret
+            pop ax
+			mov ax, cs
+            pop ax
+			mov ax, ds
+            pop ax
+			mov ax, es
+            pop ax
+			mov ax, fs
+            pop ax
+			mov ax, gs
+            pop ax
+			mov ax, ss
             popfd
             pop eax
             mov cr0, eax
@@ -135,13 +136,15 @@ _isr%1:
             mov cr3, eax
             pop ax
             mov cr4, eax
-            
+         
 		.sinDebug:
-		;xchg bx, bx
+		cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
+		je .fin
+		call game_chau_zombi
 		mov word [selector], 0x70
-    	jmp 0x70:0 										; aca hay que cambiar algo de siguiente jugador?		
-    	popad
+    	jmp 0x70:0
     .fin:
+	popad
     ;popfd
     iret
 
@@ -301,9 +304,10 @@ Teclado:
             jmp .finY
         .recuperar:
             mov byte [mostrando], 0
-            pushad
-            call recuperarPantalla
-            popad
+			pushad
+          	call recuperarPantalla
+			popad
+
     .finY:
     add ebx, 12
 	imprimir_texto_mp ebx, 1, 0x0f, 0, 79	
@@ -323,8 +327,9 @@ Teclado:
 	iret
 	
 SoloY:
-	cmp eax, 33
-    jne .fin
+	;cmp eax, 33
+    ;xchg bx, bx
+    ;jne .fin
 	call fin_intr_pic1
     in al, 0x60
     cmp al, 0x15
