@@ -5,7 +5,6 @@
 */
 
 #include "game.h"
-#include "tss.h" // ojo manzana
 char* tipos = "GCM";
 void game_jugador_mover(unsigned int jugador, unsigned int value) {
 	if (jugador==0) {

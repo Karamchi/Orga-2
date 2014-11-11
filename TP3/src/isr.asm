@@ -105,8 +105,6 @@ _isr%1:
 
             call game_print_debug
 
-            
-         
 		.sinDebug:
 		cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
 		je .fin
@@ -304,6 +302,7 @@ SoloY:
 	;jmp 0x70:0
     ;.fin: 
 	popad
+	;popfd
 	iret
 ;;
 ;; Rutinas de atención de las SYSCALLS

@@ -20,7 +20,7 @@ void task() {
     syscall_mover(DER); //breakpoint();
     }
     int j=0;
-    breakpoint();
+ //   breakpoint();
 	i=i/j;
     for(i=0;i<10;i++) {
     syscall_mover(ADE); //breakpoint();

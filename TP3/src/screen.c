@@ -6,7 +6,6 @@
 */
 
 #include "screen.h"
-	#include "i386.h"
 
 
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr) {
@@ -239,4 +238,8 @@ void pintar_relojes(){
 			p[48][60+2*i]=(ca){'X',0x01};
 		}
 	}
+}
+
+void game_terminar(){
+	print ("Game Over", 40, 40, 0x0f);
 }
