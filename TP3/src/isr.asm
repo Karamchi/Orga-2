@@ -45,12 +45,12 @@ _isr%1:
 		%if %1=8 || %1=10 || %1=11 || %1=12 || %1=13 || %1=14 || %1=17
 		add esp, 4
 		%endif 
+    cmp byte [mostrando], 1
+    je SoloY
     pushad
     ;pushfd
     mov ecx, eax	; guardo para el sys66
     mov eax, %1		; numero de interrupcion
-    cmp byte [mostrando], 1
-    je SoloY
     cmp eax, 32
     je Reloj
     cmp eax, 33
@@ -62,11 +62,12 @@ _isr%1:
     mul esi
     add edi, eax
     imprimir_texto_mp edi, 16, 0x07, 0, 0
+	call game_chau_zombi
     
 	
         cmp byte [debug], 1
         jne .sinDebug
-        mov byte [mostrando], 1
+	        mov byte [mostrando], 1
         
         	popad						;recupero originales
         	pushad						; pero no los piso
@@ -104,43 +105,11 @@ _isr%1:
 
             call game_print_debug
 
-            pop esp
-            pop eax
-            pop ebx
-            pop ecx
-            pop edx
-            pop esi
-            pop edi
-            pop ebp
-            add esp, 4
-            add esp, 4
-            ;ret
-            pop ax
-			mov ax, cs
-            pop ax
-			mov ax, ds
-            pop ax
-			mov ax, es
-            pop ax
-			mov ax, fs
-            pop ax
-			mov ax, gs
-            pop ax
-			mov ax, ss
-            popfd
-            pop eax
-            mov cr0, eax
-            pop eax
-            mov cr2, eax
-            pop eax
-            mov cr3, eax
-            pop ax
-            mov cr4, eax
+            
          
 		.sinDebug:
 		cmp byte [selector], 0x70 ; si no estoy en la idle, mato al zombi
 		je .fin
-		call game_chau_zombi
 		mov word [selector], 0x70
     	jmp 0x70:0
     .fin:
@@ -188,17 +157,15 @@ ISR 102
 ;; -------------------------------------------------------------------------- ;;
 Reloj:
 	call fin_intr_pic1
-	cmp byte [mostrando],1
+	call proximo_reloj
+	call sched_proximo_indice
+	;shl ax, 3
+	cmp ax, [selector]
 	je .end
-		call proximo_reloj
-		call sched_proximo_indice
-		;shl ax, 3
-		cmp ax, [selector]
-		je .end
-			mov [selector], ax
-			jmp far [offset]
-		    call pintar_relojes
-			jmp .end
+		mov [selector], ax
+		jmp far [offset]
+	    call pintar_relojes
+		jmp .end
 		
 	.end:
 	;popfd
@@ -328,13 +295,14 @@ Teclado:
 	
 SoloY:
 	;cmp eax, 33
-    ;xchg bx, bx
     ;jne .fin
+	pushad
 	call fin_intr_pic1
     in al, 0x60
     cmp al, 0x15
     je Teclado.imprimirY
-    .fin: 
+	;jmp 0x70:0
+    ;.fin: 
 	popad
 	iret
 ;;
